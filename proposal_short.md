@@ -1,7 +1,4 @@
 
-
-[claude_rewrite](https://docs.google.com/document/d/1Qtb6f0XfnvzuQkAsWq4AORCsBSDcUfSv/edit?usp=sharing&ouid=116239173831631656145&rtpof=true&sd=true)
-----
 # Autonomous Simulation-First B2B Sales System for European Solar Distribution
 
 ## Proposal for Sunlumo Energy — AI Sales Challenge
