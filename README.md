@@ -51,15 +51,7 @@ The central question every evaluator will ask: *how do we know these predictions
 
 **The Feedback Reactor** closes the loop. The Feedback Analyst compares predicted versus actual at every funnel stage, updates priors through Bayesian inference, and surfaces strategically actionable insights: *"WhatsApp-first sequences for Italian installers outperform email-first by 2.7× — updating channel recommendations for all future IT campaigns."* It also powers a product-market fit backrun: aggregating installer objections, compatibility gaps, and feature requests across all campaigns to detect portfolio blind spots — *"230 Polish installers requested ≤5 kWh residential batteries this quarter, a capacity absent from the current catalog"* — turning the sales system into a strategic intelligence layer.
 
----
 
-### Why This Is Defensible
-
-Our competitive analysis scored ten platforms — Artisan, 11x, Clay, Apollo, Outreach, Salesloft, Cognism, Amplemarket, Lemlist, Humanlinker — against twelve capabilities critical to European solar distribution. **Six rows show every incumbent at zero: pre-deployment campaign simulation, synthetic persona reply forecasting, solar vertical product knowledge, distributor-to-installer ICP focus, trade-show badge ingestion, and Shopware or Salesviewer intent-signal integration.** These are not marginal feature gaps. They are categorical absences.
-
-Furthermore, no US-built platform ships UWG-compliant DACH outbound presets. The German requirement for explicit consent before B2B email, enforced by active data protection authorities, structurally disqualifies most American platforms from operating on German soil without legal workarounds. Our system ships per-country compliance presets with auto-generated Legitimate-Interest Assessments, Impressum automation, and a court-grade consent ledger — not buried in fine print, but displayed as a dashboard before every campaign.
-
-The combination — **simulation-first architecture, Bayesian-grounded digital twins, native multilingual generation, UWG and GDPR compliance as a shipped feature, and a solar-vertical knowledge graph** — creates a moat no US generalist can clone in under eighteen months and no European generalist has the vertical depth to assemble. The only credible adjacent threats are Bravi, a YC-backed home-services AI that could expand from fenestration into solar, and Turian.ai of Munich, which could pivot from inbound automation to outbound. A twelve-to-twenty-four-month head start with deep vertical integration establishes category dominance.
 
 ---
 
