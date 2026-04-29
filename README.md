@@ -1,7 +1,4 @@
 [Google doc](https://docs.google.com/document/d/1lm6tftwJczB2g8UoZCJuhgeOrsoNZrtHyI0TgqzwazY/edit?usp=sharing) |
-
-------
-
 # Sunlumo AI Sales Challenge: Proposal
 
 ## The opportunity
@@ -29,20 +26,20 @@ The pilot starts deliberately with the most legally and commercially safe pocket
 
 ## What we will not do
 
-* No mass cold outbound in regulated markets before consent infrastructure is in place.
-* No LinkedIn automation that violates platform terms; we use Sales Navigator manually for high-value accounts.
-* No simulation predictions claimed as accurate before historical retrodiction has passed our internal acceptance threshold.
-* No "AI replaces your team" framing; the system augments your KAM team and escalates ambiguous replies with full context.
+- No mass cold outbound in regulated markets before consent infrastructure is in place.
+- No LinkedIn automation that violates platform terms; we use Sales Navigator manually for high-value accounts.
+- No simulation predictions claimed as accurate before historical retrodiction has passed our internal acceptance threshold.
+- No "AI replaces your team" framing; the system augments your KAM team and escalates ambiguous replies with full context.
 
 ## Indicative LLM and infrastructure costs
 
 The system uses frontier reasoning models for simulation and outreach copy, smaller models for batch enrichment, and self-hosted embeddings for retrieval. Estimated pass-through costs, billed at provider price plus a small operations margin:
 
-|Stage|Monthly LLM cost (indicative)|Supporting infra|
-|-|-|-|
-|Phase 0 MVP, single-market pilot|€500 to €1,500|€400 to €800|
-|Full DACH production|€2,000 to €5,000|€800 to €1,500|
-|Pan-European, multiple active campaigns|€5,000 to €10,000|€1,500 to €2,500|
+| Stage | Monthly LLM cost (indicative) | Supporting infra |
+|---|---|---|
+| Phase 0 MVP, single-market pilot | €500 to €1,500 | €400 to €800 |
+| Full DACH production | €2,000 to €5,000 | €800 to €1,500 |
+| Pan-European, multiple active campaigns | €5,000 to €10,000 | €1,500 to €2,500 |
 
 These are planning ranges, not commitments. A live cost dashboard is shared from week 1, and we will tune simulation depth and model mix to keep spend predictable as volume scales.
 
@@ -50,12 +47,12 @@ These are planning ranges, not commitments. A live cost dashboard is shared from
 
 The engagement opens with a 30-day proof-of-life. A 14-day milestone sits inside it as the first hard checkpoint.
 
-|Week|Milestone|What you see|
-|-|-|-|
-|1|Data connectors live (CRM, email, webshop, deanonymisation).|Last 12 months of data ingested into the prior-extraction pipeline.|
-|2 (14-day checkpoint)|First archetypes built; simulation engine v0.1; first historical retrodiction.|Live screen-share showing predicted-vs-actual gap on past campaigns.|
-|3|Visual workflow canvas with one production template.|Your team designs and simulates a campaign without engineering help.|
-|4|First production deployment to a small consented cohort.|Live dashboard: predicted reply rate alongside real-time actuals.|
+| Week | Milestone | What you see |
+|---|---|---|
+| 1 | Data connectors live (CRM, email, webshop, deanonymisation). | Last 12 months of data ingested into the prior-extraction pipeline. |
+| 2 (14-day checkpoint) | First archetypes built; simulation engine v0.1; first historical retrodiction. | Live screen-share showing predicted-vs-actual gap on past campaigns. |
+| 3 | Visual workflow canvas with one production template. | Your team designs and simulates a campaign without engineering help. |
+| 4 | First production deployment to a small consented cohort. | Live dashboard: predicted reply rate alongside real-time actuals. |
 
 By the end of month 1 you have working infrastructure ingesting your data, a calibrated simulation engine, a canvas your team can operate, and a first real campaign deployed with measurement live.
 
@@ -63,19 +60,13 @@ By the end of month 1 you have working infrastructure ingesting your data, a cal
 
 The contract is phased and milestone-gated, sized inside the range named in the brief.
 
-* **Phase 0, build and calibrate (months 1 to 3):** fixed scope. Covers infrastructure, prior extraction, simulation engine, canvas, first templates, retrodiction validation, and a controlled A/B against your current best-practice sequence.
-* **Phase 1, DACH scale (months 4 to 6):** regional rollout, trade-show and subsidy-trigger workflows, public-facing knowledge-graph asset.
-* **Phase 2, expansion (months 7 to 12):** additional European markets, each onboarded as a separate calibration run with its own KPI commitment.
-* **Phase 3, long-term partnership (month 13 onward):** renewable annual engagement covering model maintenance, new channels, and continued expansion.
+- **Phase 0, build and calibrate (months 1 to 3):** fixed scope. Covers infrastructure, prior extraction, simulation engine, canvas, first templates, retrodiction validation, and a controlled A/B against your current best-practice sequence.
+- **Phase 1, DACH scale (months 4 to 6):** regional rollout, trade-show and subsidy-trigger workflows, public-facing knowledge-graph asset.
+- **Phase 2, expansion (months 7 to 12):** additional European markets, each onboarded as a separate calibration run with its own KPI commitment.
+- **Phase 3, long-term partnership (month 13 onward):** renewable annual engagement covering model maintenance, new channels, and continued expansion.
 
-<<<<<<< HEAD
 Performance is tracked against qualified partner registrations and resulting orders, measured against your current cost baseline. The simulation layer is designed to outperform untested cold outreach, but the magnitude is something we measure together rather than promise upfront. Phase gates between each stage allow either side to review the engagement openly if a phase misses its KPI.
-||||||| 28f5e74
----
-=======
->>>>>>> b58873e01a5657d6b849ff53980418d9f6e04ec4
 
-<<<<<<< HEAD
 ## What we are asking for
 
 A short decision window and a Phase 0 contract. We start the day Sunlumo signs. By the 14-day checkpoint you will have working infrastructure, a calibrated simulation engine, and a real campaign in flight; every claim above becomes empirically testable inside the first month.
@@ -83,129 +74,3 @@ A short decision window and a Phase 0 contract. We start the day Sunlumo signs. 
 The brief asked for builders, not retrofitters. That is what we are: two AI systems engineers, one shared channel with your team, weekly demo cadence, no agency layer, no offshore handoff.
 
 *This is not "an AI SDR like 11x, in German." It is the first simulation-tested, vertically specialised B2B sales system for the European distributor-to-installer layer, with Sunlumo as the reference case.*
-||||||| 28f5e74
-### Why This Is Defensible
-
-Our competitive analysis scored ten platforms — Artisan, 11x, Clay, Apollo, Outreach, Salesloft, Cognism, Amplemarket, Lemlist, Humanlinker — against twelve capabilities critical to European solar distribution. **Six rows show every incumbent at zero: pre-deployment campaign simulation, synthetic persona reply forecasting, solar vertical product knowledge, distributor-to-installer ICP focus, trade-show badge ingestion, and Shopware or Salesviewer intent-signal integration.** These are not marginal feature gaps. They are categorical absences.
-
-Furthermore, no US-built platform ships UWG-compliant DACH outbound presets. The German requirement for explicit consent before B2B email, enforced by active data protection authorities, structurally disqualifies most American platforms from operating on German soil without legal workarounds. Our system ships per-country compliance presets with auto-generated Legitimate-Interest Assessments, Impressum automation, and a court-grade consent ledger — not buried in fine print, but displayed as a dashboard before every campaign.
-
-The combination — **simulation-first architecture, Bayesian-grounded digital twins, native multilingual generation, UWG and GDPR compliance as a shipped feature, and a solar-vertical knowledge graph** — creates a moat no US generalist can clone in under eighteen months and no European generalist has the vertical depth to assemble. The only credible adjacent threats are Bravi, a YC-backed home-services AI that could expand from fenestration into solar, and Turian.ai of Munich, which could pivot from inbound automation to outbound. A twelve-to-twenty-four-month head start with deep vertical integration establishes category dominance.
-
----
-
-### The First Thirty Days
-
-Our MVP wedge targets the fastest, warmest, most compliant path to demonstrable ROI. **Phase one:** a cart-abandonment and cross-sell agent on Sunlumo's Shopware 6 webshop — existing-customer basis, fully UWG-compliant, measurable conversion uplift within thirty days. **Phase two:** the post-trade-show workflow — badge scans ingested, enriched, simulated, and deployed within hours of Intersolar and EES closing. **Phase three:** Salesviewer deanonymization triggers driving personalized agentic follow-up to companies already browsing your site.
-
-The simulation engine itself is productizable beyond Sunlumo. We envision **SalesLab** — a standalone campaign-testing SaaS sold to European distributors in adjacent verticals — with this engagement as the reference case that defines a new category.
-
----
-
-```
-                    ┌─────────────────────────────────────────┐
-                    │          SUPERVISOR AGENT               │
-                    │     Plans → Delegates → Adapts          │
-                    └──────────────────┬──────────────────────┘
-                                       │
-     ┌─────────────────────────────────┼──────────────────────────────┐
-     │                                 │                              │
-     ▼                                 ▼                              ▼
-┌──────────────┐             ┌──────────────────┐          ┌───────────────────┐
-│  RESEARCH    │             │   SIMULATION     │          │    FEEDBACK       │
-│  AGENT       │────────────▶│   ENGINE (GATE)  │◀─────────│    ANALYST        │
-│              │             │                  │          │                   │
-│ • Legislation│             │ Multi-step       │          │ Bayesian update   │
-│ • Trade reg. │             │ persona-grounded │          │ Predicted vs.     │
-│ • Forums     │             │ sequence forecast│          │ actual comparison │
-│ • Competitor │             │ A/B optimiser    │          │ Product-gap       │
-│ • Subsidies  │             │ Confidence score │          │ detection         │
-└──────┬───────┘             └────────┬─────────┘          └─────────┬─────────┘
-       │                              │                              │
-       ▼                              ▼                              │
-┌────────────────────────────────────────────────────────────────────┼──┐
-│                   VISUAL DAG ORCHESTRATION CANVAS                  │  │
-│                                                                    │  │
-│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐     │  │
-│  │  DATA    │    │FILTER &  │    │SIMULATION│    │ OUTREACH │     │  │
-│  │ SOURCES  │───▶│INTELLIG. │───▶│   NODE   │───▶│ PIPELINE │─────┘  │
-│  │          │    │          │    │(MANDATORY│    │          │        │
-│  │• CRM     │    │• ICP     │    │  GATE)   │    │• Email   │        │
-│  │• Shop    │    │• Persona │    │          │    │• LinkedIn│        │
-│  │• Badges  │    │• Subsidy │    │Forecast: │    │• WhatsApp│        │
-│  │• Register│    │• Intent  │    │  reply    │    │• Native  │        │
-│  │• Forums  │    │• Language│    │  rate     │    │  lang.   │        │
-│  └──────────┘    └──────────┘    └────┬─────┘    └──────────┘        │
-│                                       │                              │
-│                            ┌──────────▼────────┐                    │
-│                            │  HUMAN APPROVAL   │                    │
-│                            │  Review → Approve │                    │
-│                            └───────────────────┘                    │
-└─────────────────────────────────────────────────────────────────────┘
-
-  ◀───────────────── continuous Bayesian updating ─────────────────▶
-
-Priors extracted from Sunlumo's CRM + email history + chat logs + webshop data.
-Simulation runs on 6–8 synthetic installer archetypes built from Cognism + trade registers.
-Probabilities emerge from counting, not LLM generation. Every campaign tightens the model.
-```
-=======
-
----
-
-### The First Thirty Days
-
-Our MVP wedge targets the fastest, warmest, most compliant path to demonstrable ROI. **Phase one:** a cart-abandonment and cross-sell agent on Sunlumo's Shopware 6 webshop — existing-customer basis, fully UWG-compliant, measurable conversion uplift within thirty days. **Phase two:** the post-trade-show workflow — badge scans ingested, enriched, simulated, and deployed within hours of Intersolar and EES closing. **Phase three:** Salesviewer deanonymization triggers driving personalized agentic follow-up to companies already browsing your site.
-
-The simulation engine itself is productizable beyond Sunlumo. We envision **SalesLab** — a standalone campaign-testing SaaS sold to European distributors in adjacent verticals — with this engagement as the reference case that defines a new category.
-
----
-
-```
-                    ┌─────────────────────────────────────────┐
-                    │          SUPERVISOR AGENT               │
-                    │     Plans → Delegates → Adapts          │
-                    └──────────────────┬──────────────────────┘
-                                       │
-     ┌─────────────────────────────────┼──────────────────────────────┐
-     │                                 │                              │
-     ▼                                 ▼                              ▼
-┌──────────────┐             ┌──────────────────┐          ┌───────────────────┐
-│  RESEARCH    │             │   SIMULATION     │          │    FEEDBACK       │
-│  AGENT       │────────────▶│   ENGINE (GATE)  │◀─────────│    ANALYST        │
-│              │             │                  │          │                   │
-│ • Legislation│             │ Multi-step       │          │ Bayesian update   │
-│ • Trade reg. │             │ persona-grounded │          │ Predicted vs.     │
-│ • Forums     │             │ sequence forecast│          │ actual comparison │
-│ • Competitor │             │ A/B optimiser    │          │ Product-gap       │
-│ • Subsidies  │             │ Confidence score │          │ detection         │
-└──────┬───────┘             └────────┬─────────┘          └─────────┬─────────┘
-       │                              │                              │
-       ▼                              ▼                              │
-┌────────────────────────────────────────────────────────────────────┼──┐
-│                   VISUAL DAG ORCHESTRATION CANVAS                  │  │
-│                                                                    │  │
-│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐     │  │
-│  │  DATA    │    │FILTER &  │    │SIMULATION│    │ OUTREACH │     │  │
-│  │ SOURCES  │───▶│INTELLIG. │───▶│   NODE   │───▶│ PIPELINE │─────┘  │
-│  │          │    │          │    │(MANDATORY│    │          │        │
-│  │• CRM     │    │• ICP     │    │  GATE)   │    │• Email   │        │
-│  │• Shop    │    │• Persona │    │          │    │• LinkedIn│        │
-│  │• Badges  │    │• Subsidy │    │Forecast: │    │• WhatsApp│        │
-│  │• Register│    │• Intent  │    │  reply    │    │• Native  │        │
-│  │• Forums  │    │• Language│    │  rate     │    │  lang.   │        │
-│  └──────────┘    └──────────┘    └────┬─────┘    └──────────┘        │
-│                                       │                              │
-│                            ┌──────────▼────────┐                    │
-│                            │  HUMAN APPROVAL   │                    │
-│                            │  Review → Approve │                    │
-│                            └───────────────────┘                    │
-└─────────────────────────────────────────────────────────────────────┘
-
-  ◀───────────────── continuous Bayesian updating ─────────────────▶
-
-Priors extracted from Sunlumo's CRM + email history + chat logs + webshop data.
-Simulation runs on 6–8 synthetic installer archetypes built from Cognism + trade registers.
-Probabilities emerge from counting, not LLM generation. Every campaign tightens the model.
-```
->>>>>>> b58873e01a5657d6b849ff53980418d9f6e04ec4
