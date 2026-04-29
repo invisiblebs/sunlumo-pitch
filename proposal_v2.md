@@ -34,11 +34,11 @@ The pilot starts deliberately with the most legally and commercially safe pocket
 
 The system uses frontier reasoning models for simulation and outreach copy, smaller models for batch enrichment, and self-hosted embeddings for retrieval. Estimated pass-through costs, billed at provider price plus a small operations margin:
 
-| Stage                                   | Monthly LLM cost (indicative) | Supporting infra |
-| --------------------------------------- | ----------------------------- | ---------------- |
-| Phase 0 MVP, single-market pilot        | €500 to €1,500                | €400 to €800     |
-| Full DACH production                    | €2,000 to €5,000              | €800 to €1,500   |
-| Pan-European, multiple active campaigns | €5,000 to €10,000             | €1,500 to €2,500 |
+| Stage | Monthly LLM cost (indicative) | Supporting infra |
+|---|---|---|
+| Phase 0 MVP, single-market pilot | €500 to €1,500 | €400 to €800 |
+| Full DACH production | €2,000 to €5,000 | €800 to €1,500 |
+| Pan-European, multiple active campaigns | €5,000 to €10,000 | €1,500 to €2,500 |
 
 These are planning ranges, not commitments. A live cost dashboard is shared from week 1, and we will tune simulation depth and model mix to keep spend predictable as volume scales.
 
@@ -46,12 +46,12 @@ These are planning ranges, not commitments. A live cost dashboard is shared from
 
 The engagement opens with a 30-day proof-of-life. A 14-day milestone sits inside it as the first hard checkpoint.
 
-| Week                  | Milestone                                                                      | What you see                                                         |
-| --------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
-| 1                     | Data connectors live (CRM, email, webshop, deanonymisation).                   | Last 12 months of data ingested into the prior-extraction pipeline.  |
+| Week | Milestone | What you see |
+|---|---|---|
+| 1 | Data connectors live (CRM, email, webshop, deanonymisation). | Last 12 months of data ingested into the prior-extraction pipeline. |
 | 2 (14-day checkpoint) | First archetypes built; simulation engine v0.1; first historical retrodiction. | Live screen-share showing predicted-vs-actual gap on past campaigns. |
-| 3                     | Visual workflow canvas with one production template.                           | Your team designs and simulates a campaign without engineering help. |
-| 4                     | First production deployment to a small consented cohort.                       | Live dashboard: predicted reply rate alongside real-time actuals.    |
+| 3 | Visual workflow canvas with one production template. | Your team designs and simulates a campaign without engineering help. |
+| 4 | First production deployment to a small consented cohort. | Live dashboard: predicted reply rate alongside real-time actuals. |
 
 By the end of month 1 you have working infrastructure ingesting your data, a calibrated simulation engine, a canvas your team can operate, and a first real campaign deployed with measurement live.
 
@@ -72,4 +72,4 @@ A short decision window and a Phase 0 contract. We start the day Sunlumo signs. 
 
 The brief asked for builders, not retrofitters. That is what we are: two AI systems engineers, one shared channel with your team, weekly demo cadence, no agency layer, no offshore handoff.
 
-_This is not "an AI SDR like 11x, in German." It is the first simulation-tested, vertically specialised B2B sales system for the European distributor-to-installer layer, with Sunlumo as the reference case._
+*This is not "an AI SDR like 11x, in German." It is the first simulation-tested, vertically specialised B2B sales system for the European distributor-to-installer layer, with Sunlumo as the reference case.*
