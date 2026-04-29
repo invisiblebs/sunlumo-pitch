@@ -221,7 +221,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 48px
   <div class="nav-logo">Sunlumo<span>AI</span></div>
   <div class="nav-links">
     <a href="#approach">Approach</a><a href="#methodology">Method</a>
-    <a href="#timeline">Timeline</a><a href="#pricing">Costs</a><a href="#cta">Contact</a>
+    <a href="#timeline">Timeline</a><a href="#pricing">Costs</a><a href="#team">Team</a><a href="index_team.html">Team Page</a><a href="#cta">Contact</a>
   </div>
   <div class="nav-right">
     <a href="proposal.pdf" download="Sunlumo_AI_WhitePaper.pdf" class="nav-wp">↓ White Paper</a>
@@ -313,6 +313,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 48px
   </div>
 </section>
 
+
 <section id="timeline">
   <div class="container">
     <div class="reveal"><div class="section-label">Month One</div><h2>Working infrastructure<br>in <em>30 days</em></h2><div class="section-line"></div><p>A 14-day hard checkpoint sits inside the first month. By day 14 you are watching predicted-vs-actual on your own historical campaigns, live.</p></div>
@@ -378,6 +379,64 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 48px
     </div>
   </div>
 </section>
+
+<section id="team" style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Team</div>
+      <h2>Team<br><em></em></h2>
+      <div class="section-line"></div>
+      <p style="max-width:560px;">The builders designing and operating the simulation-first system.</p>
+    </div>
+
+    <div style="margin-top:56px;display:grid;grid-template-columns:repeat(2,1fr);gap:24px;" class="reveal reveal-delay-1">
+
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:20px;text-align:center;">
+        <div class="avatar">
+          <picture>
+            <source srcset="image_1.png" type="image/png">
+            <source srcset="image_1.jpg" type="image/jpeg">
+            <img src="image_1.png" alt="team member" style="width:100%;height:100%;object-fit:cover;display:block;" />
+          </picture>
+        </div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--white);margin-bottom:6px;">Person Name</div>
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--amber);margin-bottom:10px;">Role / Position</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6;">Short portfolio description goes here.</div>
+      </div>
+
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:20px;text-align:center;">
+        <div class="avatar">
+          <picture>
+            <source srcset="image_2.png" type="image/png">
+            <source srcset="image_2.jpg" type="image/jpeg">
+            <img src="image_2.png" alt="team member" style="width:100%;height:100%;object-fit:cover;display:block;" />
+          </picture>
+        </div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--white);margin-bottom:6px;">Person Name</div>
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--amber);margin-bottom:10px;">Role / Position</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6;">Short portfolio description goes here.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+/* Avatar polish */
+.avatar{width:180px;height:180px;margin:0 auto 16px;border-radius:50%;overflow:hidden;border:1px solid var(--border);background:#0d1220;position:relative;transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease, filter .35s ease}
+.avatar::after{content:'';position:absolute;inset:-2px;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .25s ease;box-shadow:0 0 0 0 rgba(245,166,35,.0), 0 0 40px rgba(245,166,35,.0)}
+/* animated gradient ring */
+.avatar::before{content:'';position:absolute;inset:-3px;border-radius:50%;background:conic-gradient(from 0deg, rgba(245,166,35,0.0), rgba(245,166,35,0.6), rgba(77,217,224,0.5), rgba(245,166,35,0.0));filter:blur(6px);opacity:0;transition:opacity .25s ease;animation:spin 6s linear infinite}
+
+/* hover */
+.avatar:hover{transform:translateY(-4px) scale(1.02);border-color:var(--border-amber);box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.avatar:hover img{transform:scale(1.06);filter:saturate(1.05) contrast(1.05)}
+.avatar:hover::after{opacity:1;box-shadow:0 0 0 2px rgba(245,166,35,.35), 0 0 40px rgba(245,166,35,.25), 0 0 80px rgba(77,217,224,.15)}
+.avatar:hover::before{opacity:1}
+
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+</style>
 
 <footer>
   <div class="footer-logo">Sunlumo<span>AI</span></div>
