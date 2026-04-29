@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic Sales System — Sunlumo Energy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#eeecea;--card:#fff;--dark:#111;
+  --teal:#3ecf8e;--tdim:rgba(62,207,142,.14);--ttxt:#1a7a4e;
+  --peach:#e8956a;--gray:#555;
+  --shadow:0 1px 12px rgba(0,0,0,.06);
+}
+html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);
+  overflow:hidden;width:100vw;height:100vh;-webkit-font-smoothing:antialiased;}
+.gridbg{position:fixed;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(0,0,0,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(0,0,0,.03) 1px,transparent 1px);background-size:48px 48px;}
+
+.world{position:absolute;top:0;left:0;width:12500px;height:900px;z-index:2;
+  transition:transform 2s cubic-bezier(.4,0,.2,1);will-change:transform;transform-origin:0 0;}
+canvas#lc{position:absolute;top:0;left:0;pointer-events:none;z-index:1;}
+
+/* ─ White card ─ */
+.wc{position:absolute;background:var(--card);border-radius:14px;padding:18px 22px;
+  box-shadow:var(--shadow);opacity:0;transition:opacity .5s ease;white-space:normal;}
+.wc.on{opacity:1;}
+.wt{font-size:18px;font-weight:700;color:var(--dark);}
+.ws{font-size:12.5px;color:var(--gray);margin-top:2px;}
+.wsep{height:1px;background:rgba(0,0,0,.06);margin:10px 0 8px;}
+.wr{display:flex;justify-content:space-between;align-items:center;}
+.wl{font-size:12.5px;color:var(--gray);}
+.wv{font-size:16px;font-weight:700;color:var(--dark);}
+.wv.t{color:var(--ttxt);}
+.cl{margin-top:4px;font-size:12px;line-height:1.6;}
+.cl.w{color:var(--gray);} .cl.w b{color:var(--dark);font-weight:600;}
+.cl.d{color:rgba(255,255,255,.5);} .cl.d b{color:#fff;font-weight:600;}
+
+/* ─ Dark card ─ */
+.dc{position:absolute;background:var(--dark);border-radius:14px;padding:18px 22px;color:#fff;
+  opacity:0;transition:opacity .5s ease;}
+.dc.on{opacity:1;}
+.dt{font-size:18px;font-weight:700;}
+.ds{font-size:12.5px;color:rgba(255,255,255,.45);margin-top:2px;}
+.dsep{height:1px;background:rgba(255,255,255,.1);margin:10px 0 8px;}
+.dr{display:flex;justify-content:space-between;align-items:center;}
+.dl{font-size:12.5px;color:rgba(255,255,255,.45);}
+.dv{font-size:16px;font-weight:700;color:var(--teal);}
+.lk{position:absolute;top:-13px;left:-13px;width:28px;height:28px;border-radius:50%;
+  background:var(--dark);border:2.5px solid var(--teal);
+  display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--teal);}
+
+/* ─ Pills ─ */
+.gp{position:absolute;background:var(--teal);color:#fff;border-radius:8px;padding:10px 18px;
+  font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:8px;
+  opacity:0;transition:opacity .4s ease;white-space:nowrap;}
+.gp.on{opacity:1;}
+.mp{position:absolute;background:var(--tdim);color:var(--ttxt);border-radius:8px;
+  padding:10px 18px;font-size:13px;font-weight:600;
+  opacity:0;transition:opacity .4s ease;white-space:nowrap;}
+.mp.on{opacity:1;}
+.db{position:absolute;background:var(--dark);color:#fff;border-radius:9px;padding:10px 18px;
+  font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:8px;
+  border:2px solid rgba(255,255,255,.08);
+  opacity:0;transition:all .4s ease;white-space:nowrap;}
+.db.on{opacity:1;}
+.db.hl{border-color:var(--peach);}
+.sm{width:15px;height:15px;border-radius:3.5px;background:var(--teal);color:#fff;
+  font-size:8px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.smw{background:rgba(255,255,255,.22);}
+.tx{position:absolute;font-size:11px;font-family:'SF Mono','Fira Code',monospace;
+  color:rgba(0,0,0,.55);opacity:0;transition:opacity .3s ease;white-space:nowrap;
+  background:rgba(255,255,255,.75);padding:2px 7px;border-radius:4px;}
+.tx.on{opacity:1;}
+
+/* ─ Workflow step node ─ */
+.sn{position:absolute;background:var(--card);border:2px solid rgba(0,0,0,.08);border-radius:10px;
+  padding:10px 16px;font-size:13px;font-weight:600;color:var(--dark);text-align:center;
+  opacity:0;transition:all .4s ease;white-space:nowrap;}
+.sn.on{opacity:1;}
+.sn.active{border-color:var(--teal);background:var(--tdim);color:var(--ttxt);}
+.sn .snsub{font-size:11px;font-weight:500;color:var(--teal);margin-top:2px;}
+
+/* ═══ AGENT CARD — large, prominent, teal-accented ═══ */
+.ac{position:absolute;background:var(--card);border-radius:12px;padding:10px 16px 10px 10px;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 2px 16px rgba(62,207,142,.12);
+  border-left:4px solid var(--teal);
+  opacity:0;transition:opacity .4s ease;white-space:nowrap;}
+.ac.on{opacity:1;}
+.av{width:36px;height:36px;border-radius:8px;background:var(--teal);color:#fff;
+  font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(62,207,142,.25);}
+.ac-info{display:flex;flex-direction:column;gap:1px;}
+.ac-name{font-size:14px;font-weight:700;color:var(--dark);}
+.ac-role{font-size:11.5px;color:var(--gray);}
+.ac-dot{width:10px;height:10px;border-radius:50%;background:var(--teal);margin-left:auto;flex-shrink:0;}
+@keyframes dotpulse{0%,100%{box-shadow:0 0 0 0 rgba(62,207,142,.5);}50%{box-shadow:0 0 0 8px rgba(62,207,142,0);}}
+.ac-dot.pulse{animation:dotpulse 1.5s infinite;}
+
+/* ═══ ACTIVITY LOG — readable, with teal agent names ═══ */
+.al{position:absolute;font-size:13px;font-family:'Inter',system-ui,sans-serif;
+  color:rgba(0,0,0,.7);opacity:0;transition:opacity .3s ease;white-space:nowrap;
+  display:flex;align-items:center;gap:8px;}
+.al.on{opacity:1;}
+.al::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0;}
+.al b{color:var(--ttxt);font-weight:700;}
+
+/* ═══ SIM RESULT CARD ═══ */
+.src{position:absolute;background:var(--card);border-radius:12px;padding:14px 18px;
+  width:280px;box-shadow:var(--shadow);border:2px solid transparent;
+  opacity:0;transition:all .5s ease;}
+.src.on{opacity:1;}
+.src.best{border-color:var(--teal);box-shadow:0 2px 20px rgba(62,207,142,.2);}
+.src-t{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.src-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;}
+.src-lbl{color:var(--gray);}
+.src-val{font-weight:700;color:var(--dark);}
+.src-val.t{color:var(--ttxt);}
+.src-diff{font-size:10.5px;color:var(--ttxt);margin-top:4px;padding:4px 8px;
+  background:var(--tdim);border-radius:5px;font-weight:600;}
+
+/* ═══ EDITABLE PARAM ROW — highlight on change ═══ */
+.wr.edited{background:var(--tdim);border-radius:6px;padding:4px 10px;margin:0 -10px;
+  transition:background .4s ease;}
+.wr.editing{background:rgba(62,207,142,.25);border-radius:6px;padding:4px 10px;margin:0 -10px;
+  transition:background .2s ease;}
+
+/* ═══ FLEET DOT — bigger, glowing ═══ */
+.fd{position:absolute;width:32px;height:32px;border-radius:50%;background:var(--teal);
+  opacity:0;transition:all .3s ease;display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:#fff;font-weight:700;box-shadow:0 2px 10px rgba(62,207,142,.3);}
+.fd.on{opacity:.9;}
+
+/* Cursor */
+.cur{position:absolute;z-index:50;opacity:0;pointer-events:none;
+  transition:left 1.2s cubic-bezier(.4,0,.2,1),top 1.2s cubic-bezier(.4,0,.2,1),opacity .3s ease;}
+.cur svg{width:18px;height:26px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.15));}
+.sl{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:90;
+  font-size:16px;font-weight:800;color:var(--dark);letter-spacing:1px;
+  text-transform:uppercase;opacity:0;transition:opacity .5s ease;white-space:nowrap;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(10px);padding:10px 28px;border-radius:10px;
+  box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.06);}
+.sl.on{opacity:1;}
+.sl .step-num{color:var(--teal);font-weight:800;margin-right:4px;}
+.bb{position:fixed;bottom:0;left:0;right:0;height:32px;z-index:100;
+  background:rgba(255,255,255,.75);backdrop-filter:blur(8px);
+  display:flex;align-items:center;padding:0 14px;gap:7px;
+  font-size:12px;color:var(--gray);border-top:1px solid rgba(0,0,0,.04);}
+</style>
+</head>
+<body>
+<div class="gridbg"></div>
+<div class="world" id="world">
+<canvas id="lc"></canvas>
+
+<!-- ══════ S1: CONNECT DATA (x:200-1100) ══════ -->
+<div class="dc" id="a_ws" style="left:550px;top:220px;width:320px;">
+  <div class="lk">⚡</div>
+  <div class="dt">Agent Workspace</div>
+  <div class="ds">Connect your data · Power your agents</div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Sources</span><span class="dv" id="v_src">0</span></div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Records</span><span class="dv" id="v_recs">0</span></div>
+</div>
+<div class="db" id="a_add" style="left:920px;top:270px;"><span class="sm">S</span> Add Sources</div>
+<div class="gp" id="a_crm" style="left:140px;top:80px;"><span class="sm smw">S</span> CRM · 3,241 Deals</div>
+<div class="tx" id="ax1" style="left:180px;top:118px;">win_rate: 34%  avg_deal: €38K</div>
+<div class="gp" id="a_email" style="left:140px;top:180px;"><span class="sm smw">S</span> Emails · 8,102 Threads</div>
+<div class="tx" id="ax2" style="left:180px;top:218px;">objections · follow-ups · pricing</div>
+<div class="gp" id="a_prod" style="left:140px;top:280px;"><span class="sm smw">S</span> Product Catalog</div>
+<div class="tx" id="ax3" style="left:180px;top:318px;">SigenStor · SigenStack · SigenMicro</div>
+<div class="gp" id="a_monday" style="left:140px;top:380px;"><span class="sm smw">S</span> Monday Notes</div>
+<div class="tx" id="ax4" style="left:180px;top:418px;">pipeline_notes · deal_stages</div>
+<div class="gp" id="a_meet" style="left:140px;top:480px;"><span class="sm smw">S</span> AI Meeting Notes</div>
+<div class="tx" id="ax5" style="left:180px;top:518px;">call_transcripts · action_items</div>
+
+<!-- ══════ S2: WORKFLOW + AGENT ROLES (x:1400-3000) ══════ -->
+<div class="dc" id="b_builder" style="left:1450px;top:180px;width:320px;">
+  <div class="lk">🔧</div>
+  <div class="dt">Sales Workflow Builder</div>
+  <div class="ds">Each step = an agent role</div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Steps</span><span class="dv" id="v_steps">0</span></div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Agent Roles</span><span class="dv" id="v_roles">0</span></div>
+</div>
+
+<!-- Step nodes with agent role -->
+<div class="sn" id="b1" style="left:1880px;top:80px;width:180px;">🔍 Lead Discovery<div class="snsub">Prospector Agent</div></div>
+<div class="sn" id="b2" style="left:2110px;top:80px;width:180px;">📊 Enrichment<div class="snsub">Enricher Agent</div></div>
+<div class="sn" id="b3" style="left:2340px;top:80px;width:180px;">🎯 Intent Scoring<div class="snsub">Scorer Agent</div></div>
+<div class="sn" id="b4" style="left:1880px;top:260px;width:180px;">✍️ Personalization<div class="snsub">Writer Agent</div></div>
+<div class="sn" id="b5" style="left:2110px;top:260px;width:180px;">📤 Outreach<div class="snsub">Outreach Agent</div></div>
+<div class="sn" id="b6" style="left:2340px;top:260px;width:180px;">🔄 Follow-up<div class="snsub">Nurture Agent</div></div>
+<div class="sn" id="b7" style="left:2110px;top:430px;width:180px;">📋 Qualify + Book<div class="snsub">Qualifier Agent</div></div>
+<div class="sn" id="b8" style="left:2340px;top:430px;width:180px;">🤝 Close / Handoff<div class="snsub">Closer Agent</div></div>
+<div class="gp" id="b_ready" style="left:2570px;top:440px;"><span class="sm smw">S</span> 8 steps · 8 agent roles</div>
+
+<!-- ══════ S3: SPIN UP AGENT FLEET (x:3200-4700) ══════ -->
+<div class="dc" id="c_orch" style="left:3350px;top:200px;width:320px;">
+  <div class="lk">🧠</div>
+  <div class="dt">Agent Orchestrator</div>
+  <div class="ds">Spinning up fleet for DACH market</div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Fleet Size</span><span class="dv" id="v_fleet">0</span></div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Status</span><span class="dv" id="v_fstatus">Deploying...</span></div>
+</div>
+
+<!-- Agent cards — two columns for better layout -->
+<div class="ac" id="ag1" style="left:3750px;top:50px;">
+  <div class="av">01</div><div class="ac-info"><span class="ac-name">DE-01 Prospector</span><span class="ac-role">Bavaria · Lead Discovery</span></div><div class="ac-dot pulse"></div>
+</div>
+<div class="ac" id="ag2" style="left:4070px;top:50px;">
+  <div class="av">02</div><div class="ac-info"><span class="ac-name">DE-02 Prospector</span><span class="ac-role">NRW · Lead Discovery</span></div><div class="ac-dot pulse"></div>
+</div>
+<div class="ac" id="ag3" style="left:3750px;top:120px;">
+  <div class="av">03</div><div class="ac-info"><span class="ac-name">DE-03 Enricher</span><span class="ac-role">Company Data · Contacts</span></div><div class="ac-dot pulse"></div>
+</div>
+<div class="ac" id="ag4" style="left:4070px;top:120px;">
+  <div class="av">04</div><div class="ac-info"><span class="ac-name">DE-04 Scorer</span><span class="ac-role">Intent Signals · 6sense-style</span></div><div class="ac-dot pulse"></div>
+</div>
+<div class="ac" id="ag5" style="left:3750px;top:190px;">
+  <div class="av">05</div><div class="ac-info"><span class="ac-name">DE-05 Writer</span><span class="ac-role">German · Personalization</span></div><div class="ac-dot pulse"></div>
+</div>
+<div class="ac" id="ag6" style="left:4070px;top:190px;">
+  <div class="av">06</div><div class="ac-info"><span class="ac-name">DE-06 Email Agent</span><span class="ac-role">Outreach · Deliverability</span></div><div class="ac-dot pulse"></div>
+</div>
+<div class="ac" id="ag7" style="left:3750px;top:260px;">
+  <div class="av">07</div><div class="ac-info"><span class="ac-name">DE-07 LinkedIn Agent</span><span class="ac-role">Connect · InMail</span></div><div class="ac-dot pulse"></div>
+</div>
+<div class="ac" id="ag8" style="left:4070px;top:260px;">
+  <div class="av">08</div><div class="ac-info"><span class="ac-name">DE-08 Nurture Agent</span><span class="ac-role">Follow-up · Cadence</span></div><div class="ac-dot pulse"></div>
+</div>
+<div class="ac" id="ag9" style="left:3750px;top:330px;">
+  <div class="av">09</div><div class="ac-info"><span class="ac-name">DE-09 Qualifier</span><span class="ac-role">Score Replies · Book</span></div><div class="ac-dot pulse"></div>
+</div>
+<div class="ac" id="ag10" style="left:4070px;top:330px;">
+  <div class="av">10</div><div class="ac-info"><span class="ac-name">DE-10 Closer</span><span class="ac-role">Handoff to Sales Team</span></div><div class="ac-dot pulse"></div>
+</div>
+<div class="gp" id="c_fleet" style="left:3400px;top:430px;"><span class="sm smw">S</span> Fleet Online · 10 Agents Active</div>
+
+<!-- ══════ S4: MULTI-INSTANCE SIMULATION (x:4900-6400) ══════ -->
+<div class="dc" id="d_sim" style="left:5000px;top:160px;width:320px;">
+  <div class="lk">🎮</div>
+  <div class="dt">Simulation Engine</div>
+  <div class="ds">Run multiple instances · Compare · Pick best</div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Simulations Run</span><span class="dv" id="v_simrun">0</span></div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Agents Per Run</span><span class="dv">10</span></div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Best Result</span><span class="dv" id="v_best">—</span></div>
+</div>
+
+<!-- Tuning panel — clearly editable, rows have IDs for highlighting -->
+<div class="wc" id="d_tune" style="left:5000px;top:430px;width:300px;">
+  <div class="wt" style="font-size:16px;">⚙ Configuration</div>
+  <div class="ws">Click parameters to tune between runs</div>
+  <div class="wsep"></div>
+  <div class="wr" id="p_tone"><span class="wl">Tone</span><span class="wv t" id="v_tone">Professional</span></div>
+  <div class="wsep"></div>
+  <div class="wr" id="p_cad"><span class="wl">Cadence</span><span class="wv t" id="v_cad">Day 1, 3, 7, 14</span></div>
+  <div class="wsep"></div>
+  <div class="wr" id="p_dsrc"><span class="wl">Data Sources</span><span class="wv t" id="v_dsrc">CRM + Email</span></div>
+  <div class="wsep"></div>
+  <div class="wr" id="p_lang"><span class="wl">Language</span><span class="wv t" id="v_slang">DE · Auto</span></div>
+</div>
+
+<!-- Run button — clicked before each sim -->
+<div class="db" id="d_run" style="left:5000px;top:660px;"><span class="sm">S</span> Run Simulation →</div>
+
+<!-- Sim Result #1 — Baseline -->
+<div class="src" id="sr1" style="left:5430px;top:50px;">
+  <div class="src-t">Sim #1 · Baseline</div>
+  <div class="src-row"><span class="src-lbl">Reply Rate</span><span class="src-val" id="sr1_rr">—</span></div>
+  <div class="src-row"><span class="src-lbl">Meetings</span><span class="src-val" id="sr1_mt">—</span></div>
+  <div class="src-row"><span class="src-lbl">Projected Win</span><span class="src-val" id="sr1_wr">—</span></div>
+  <div class="src-diff" id="sr1_diff" style="display:none;"></div>
+</div>
+<div class="fd" id="sa1" style="left:5380px;top:70px;">A1</div>
+<div class="fd" id="sa2" style="left:5380px;top:108px;">A2</div>
+<div class="fd" id="sa3" style="left:5380px;top:146px;">A3</div>
+
+<!-- Sim Result #2 — After cadence tune -->
+<div class="src" id="sr2" style="left:5430px;top:230px;">
+  <div class="src-t">Sim #2 · Faster Cadence</div>
+  <div class="src-row"><span class="src-lbl">Reply Rate</span><span class="src-val" id="sr2_rr">—</span></div>
+  <div class="src-row"><span class="src-lbl">Meetings</span><span class="src-val" id="sr2_mt">—</span></div>
+  <div class="src-row"><span class="src-lbl">Projected Win</span><span class="src-val" id="sr2_wr">—</span></div>
+  <div class="src-diff" id="sr2_diff" style="display:none;">Changed: Cadence → Day 1, 3, 5, 10</div>
+</div>
+<div class="fd" id="sb1" style="left:5380px;top:250px;">A4</div>
+<div class="fd" id="sb2" style="left:5380px;top:288px;">A5</div>
+<div class="fd" id="sb3" style="left:5380px;top:326px;">A6</div>
+
+<!-- Sim Result #3 — After adding data = BEST -->
+<div class="src" id="sr3" style="left:5430px;top:420px;">
+  <div class="src-t">Sim #3 · +Data Sources ★</div>
+  <div class="src-row"><span class="src-lbl">Reply Rate</span><span class="src-val t" id="sr3_rr">—</span></div>
+  <div class="src-row"><span class="src-lbl">Meetings</span><span class="src-val t" id="sr3_mt">—</span></div>
+  <div class="src-row"><span class="src-lbl">Projected Win</span><span class="src-val t" id="sr3_wr">—</span></div>
+  <div class="src-diff" id="sr3_diff" style="display:none;">Added: AI Meeting Notes + Monday</div>
+</div>
+<div class="fd" id="sc1" style="left:5380px;top:440px;">A7</div>
+<div class="fd" id="sc2" style="left:5380px;top:478px;">A8</div>
+<div class="fd" id="sc3" style="left:5380px;top:516px;">A9</div>
+
+<div class="gp" id="d_pick" style="left:5460px;top:600px;"><span class="sm smw">S</span> Sim #3 selected · Deploying best workflow</div>
+
+<!-- ══════ S5: OUTREACH AGENTS (x:6500-7900) ══════ -->
+<div class="dc" id="e_out" style="left:6600px;top:200px;width:280px;">
+  <div class="lk">📤</div>
+  <div class="dt">Outreach Fleet</div>
+  <div class="ds">Agents delivering across channels</div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Active Agents</span><span class="dv" id="v_oa">0</span></div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Channels</span><span class="dv" id="v_oc">0</span></div>
+</div>
+
+<div class="sn" id="e_ch1" style="left:6920px;top:100px;width:140px;">📧 Email<div class="snsub">DE · CS · HU</div></div>
+<div class="sn" id="e_ch2" style="left:6920px;top:240px;width:140px;">💼 LinkedIn<div class="snsub">Connect + InMail</div></div>
+<div class="sn" id="e_ch3" style="left:6920px;top:380px;width:140px;">📞 Phone<div class="snsub">Follow-up calls</div></div>
+<div class="sn" id="e_ch4" style="left:6920px;top:510px;width:140px;">💬 WhatsApp<div class="snsub">Quick touch</div></div>
+
+<!-- Agent → Channel → Installer -->
+<div class="ac" id="ea1" style="left:7120px;top:70px;">
+  <div class="av">06</div><div class="ac-info"><span class="ac-name">DE-06 → Weber</span><span class="ac-role">Email DE · Sent</span></div><div class="ac-dot pulse"></div>
+</div>
+<div class="wc" id="e_i1" style="left:7400px;top:50px;width:240px;">
+  <div class="wt">Weber Solartechnik 🇩🇪</div>
+  <div class="ws">Munich · SigenStor prospect</div>
+  <div class="wsep"></div>
+  <div class="wr"><span class="wl">Status</span><span class="wv t" id="v_ei1">—</span></div>
+</div>
+
+<div class="ac" id="ea2" style="left:7120px;top:210px;">
+  <div class="av">07</div><div class="ac-info"><span class="ac-name">DE-07 → EnergiePro</span><span class="ac-role">LinkedIn CS · Connect</span></div><div class="ac-dot pulse"></div>
+</div>
+<div class="wc" id="e_i2" style="left:7400px;top:200px;width:240px;">
+  <div class="wt">EnergiePro s.r.o. 🇨🇿</div>
+  <div class="ws">Prague · Electrician</div>
+  <div class="wsep"></div>
+  <div class="wr"><span class="wl">Status</span><span class="wv t" id="v_ei2">—</span></div>
+</div>
+
+<div class="ac" id="ea3" style="left:7120px;top:360px;">
+  <div class="av">08</div><div class="ac-info"><span class="ac-name">DE-08 → Green Power</span><span class="ac-role">Phone HU · Follow-up</span></div><div class="ac-dot pulse"></div>
+</div>
+<div class="wc" id="e_i3" style="left:7400px;top:350px;width:240px;">
+  <div class="wt">Green Power Kft. 🇭🇺</div>
+  <div class="ws">Budapest · Installer</div>
+  <div class="wsep"></div>
+  <div class="wr"><span class="wl">Status</span><span class="wv t" id="v_ei3">—</span></div>
+</div>
+
+<!-- ══════ S6: FEEDBACK + AGENT LEARNING (x:8100-9200) ══════ -->
+<div class="dc" id="f_react" style="left:8200px;top:180px;width:290px;">
+  <div class="lk">🔄</div>
+  <div class="dt">Feedback Reactor</div>
+  <div class="ds">All agents recalibrating from results</div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Patterns Learned</span><span class="dv" id="v_pat">0</span></div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Win Rate Δ</span><span class="dv" id="v_wrd">+0%</span></div>
+</div>
+
+<div class="gp" id="f_w" style="left:8560px;top:100px;"><span class="sm smw">S</span> Won: Weber · €42K</div>
+<div class="al" id="fl1" style="left:8560px;top:145px;"><b>Pattern:</b> local_warehouse + 48hr_delivery → amplified to all agents</div>
+<div class="gp" id="f_s" style="left:8560px;top:210px;"><span class="sm smw">S</span> Stalled: EnergiePro</div>
+<div class="al" id="fl2" style="left:8560px;top:255px;"><b>Action:</b> DE-08 switching to phone follow-up</div>
+<div class="db" id="f_l" style="left:8560px;top:320px;"><span class="sm">S</span> Lost: Kovács · "has supplier"</div>
+<div class="al" id="fl3" style="left:8560px;top:365px;"><b>Learning:</b> new objection handler → deployed to all Writer Agents</div>
+<div class="mp" id="f_loop" style="left:8220px;top:440px;">↩ Re-scoring 89 prospects · All 10 agents updated in real-time</div>
+
+<!-- ══════ S7: ZOOM FLEET + DEPLOY + LIVE METRICS (x:9400-11000) ══════ -->
+<!-- Fleet dots — spaced for bigger 32px dots -->
+<div class="fd" id="fd1" style="left:9450px;top:70px;">01</div>
+<div class="fd" id="fd2" style="left:9500px;top:70px;">02</div>
+<div class="fd" id="fd3" style="left:9550px;top:70px;">03</div>
+<div class="fd" id="fd4" style="left:9600px;top:70px;">04</div>
+<div class="fd" id="fd5" style="left:9650px;top:70px;">05</div>
+<div class="fd" id="fd6" style="left:9700px;top:70px;">06</div>
+<div class="fd" id="fd7" style="left:9750px;top:70px;">07</div>
+<div class="fd" id="fd8" style="left:9800px;top:70px;">08</div>
+<div class="fd" id="fd9" style="left:9850px;top:70px;">09</div>
+<div class="fd" id="fd10" style="left:9900px;top:70px;">10</div>
+<div class="mp" id="fdt1" style="left:9560px;top:115px;">🇦🇹🇩🇪 DACH Fleet · 10 agents</div>
+
+<div class="fd" id="fd11" style="left:9450px;top:170px;">11</div>
+<div class="fd" id="fd12" style="left:9500px;top:170px;">12</div>
+<div class="fd" id="fd13" style="left:9550px;top:170px;">13</div>
+<div class="fd" id="fd14" style="left:9600px;top:170px;">14</div>
+<div class="fd" id="fd15" style="left:9650px;top:170px;">15</div>
+<div class="fd" id="fd16" style="left:9700px;top:170px;">16</div>
+<div class="fd" id="fd17" style="left:9750px;top:170px;">17</div>
+<div class="fd" id="fd18" style="left:9800px;top:170px;">18</div>
+<div class="mp" id="fdt2" style="left:9540px;top:215px;">🇨🇿🇭🇺🇸🇰 CEE Fleet · 8 agents</div>
+
+<div class="fd" id="fd19" style="left:9450px;top:270px;">19</div>
+<div class="fd" id="fd20" style="left:9500px;top:270px;">20</div>
+<div class="fd" id="fd21" style="left:9550px;top:270px;">21</div>
+<div class="fd" id="fd22" style="left:9600px;top:270px;">22</div>
+<div class="fd" id="fd23" style="left:9650px;top:270px;">23</div>
+<div class="fd" id="fd24" style="left:9700px;top:270px;">24</div>
+<div class="mp" id="fdt3" style="left:9510px;top:315px;">🇭🇷🇸🇮🇷🇸 Balkan Fleet · 6 agents</div>
+
+<div class="dc" id="g_deploy" style="left:9500px;top:330px;width:310px;">
+  <div class="lk">🚀</div>
+  <div class="dt">Sales Shuttle · Deploy</div>
+  <div class="ds">Best workflow → production agents</div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Selected</span><span class="dv" id="v_sel" style="font-size:12px;">—</span></div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Markets</span><span class="dv" id="v_mk">0 / 7</span></div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Live Agents</span><span class="dv" id="v_la">0</span></div>
+</div>
+
+<div class="wc" id="g_dash" style="left:9900px;top:130px;width:260px;">
+  <div class="wt" style="font-size:14px;">Live Production Metrics</div>
+  <div class="ws">24 agents · 7 markets · Real-time</div>
+  <div class="wsep"></div>
+  <div class="wr"><span class="wl">Pipeline</span><span class="wv t" id="v_pip">€0</span></div>
+  <div class="wsep"></div>
+  <div class="wr"><span class="wl">Conversion</span><span class="wv" id="v_cvr">0%</span></div>
+  <div class="wsep"></div>
+  <div class="wr"><span class="wl">Closed ✓</span><span class="wv t" id="v_cls">0</span></div>
+  <div class="wsep"></div>
+  <div class="wr"><span class="wl">Stalled ⏸</span><span class="wv" style="color:var(--peach);" id="v_stl">0</span></div>
+  <div class="wsep"></div>
+  <div class="wr"><span class="wl">Lost ✗</span><span class="wv" style="color:#aaa;" id="v_lst">0</span></div>
+  <div class="wsep"></div>
+  <div class="wr"><span class="wl">Cost/Lead</span><span class="wv" id="v_cpl">€0</span></div>
+</div>
+<div class="gp" id="g_live" style="left:9900px;top:530px;"><span class="sm smw">S</span> 7 Markets · 24 Agents · Production</div>
+
+<!-- ══════ S8: EXPERT AGENTS (x:10300-11600) ══════ -->
+<div class="dc" id="h_rev" style="left:10400px;top:200px;width:300px;">
+  <div class="lk">👥</div>
+  <div class="dt">Expert Agent Assembly</div>
+  <div class="ds">Specialized agents review + enhance</div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Experts</span><span class="dv" id="v_exp">0</span></div>
+  <div class="dsep"></div>
+  <div class="dr"><span class="dl">Enhancements</span><span class="dv" id="v_enh">0</span></div>
+</div>
+
+<div class="ac" id="ex1" style="left:10780px;top:60px;border-left-color:#e8956a;">
+  <div class="av" style="background:#e8956a;width:40px;height:40px;font-size:14px;">🎯</div><div class="ac-info"><span class="ac-name" style="font-size:15px;">Strategy Agent</span><span class="ac-role" style="font-size:12px;">Add competitor displacement playbook</span></div><div class="ac-dot pulse" style="background:#e8956a;"></div>
+</div>
+<div class="ac" id="ex2" style="left:10780px;top:170px;border-left-color:#3b82f6;">
+  <div class="av" style="background:#3b82f6;width:40px;height:40px;font-size:14px;">🌍</div><div class="ac-info"><span class="ac-name" style="font-size:15px;">Market Intel Agent</span><span class="ac-role" style="font-size:12px;">Add PV Austria installer registry</span></div><div class="ac-dot pulse" style="background:#3b82f6;"></div>
+</div>
+<div class="ac" id="ex3" style="left:10780px;top:280px;border-left-color:#8b5cf6;">
+  <div class="av" style="background:#8b5cf6;width:40px;height:40px;font-size:14px;">📝</div><div class="ac-info"><span class="ac-name" style="font-size:15px;">Language Agent</span><span class="ac-role" style="font-size:12px;">Czech vykání → +18% reply rate</span></div><div class="ac-dot pulse" style="background:#8b5cf6;"></div>
+</div>
+<div class="ac" id="ex4" style="left:10780px;top:390px;border-left-color:#14b8a6;">
+  <div class="av" style="background:#14b8a6;width:40px;height:40px;font-size:14px;">⚖️</div><div class="ac-info"><span class="ac-name" style="font-size:15px;">Compliance Agent</span><span class="ac-role" style="font-size:12px;">GDPR OK · all 7 markets verified</span></div><div class="ac-dot pulse" style="background:#14b8a6;"></div>
+</div>
+<div class="gp" id="h_final" style="left:10450px;top:480px;"><span class="sm smw">S</span> 12 enhancements applied · Ready to deploy →</div>
+
+</div><!-- /world -->
+
+<div class="cur" id="cur"><svg viewBox="0 0 18 26" fill="none"><path d="M2 2L14 12L8 13L6 22L2 2Z" fill="#111" stroke="#fff" stroke-width="1.2"/></svg></div>
+<div class="sl" id="sl"></div>
+<div class="bb"><span class="sm" style="width:11px;height:11px;font-size:7px;">S</span> Agentic Sales System · 24 AI Agents · Built for Sunlumo Energy</div>
+
+<script>
+// ═══════════════════════════════════════
+// MODULE: Lines
+// ═══════════════════════════════════════
+const Lines = {
+  conns:[], canvas:null, ctx:null,
+  init(){
+    this.canvas=document.getElementById('lc');
+    this.canvas.width=12500; this.canvas.height=900;
+    this.canvas.style.width='12500px'; this.canvas.style.height='900px';
+    this.ctx=this.canvas.getContext('2d');
+    this._loop();
+  },
+  edge(id,side){
+    const el=document.getElementById(id); if(!el) return [0,0];
+    const l=el.offsetLeft, t=el.offsetTop, w=el.offsetWidth||200, h=el.offsetHeight||60;
+    switch(side){
+      case 'r':return[l+w,t+h/2]; case 'l':return[l,t+h/2];
+      case 't':return[l+w/2,t]; case 'b':return[l+w/2,t+h];
+    }
+  },
+  add(s,ss,t,ts,o={}){
+    const from=this.edge(s,ss);
+    const to=this.edge(t,ts);
+    // Optional pixel offsets for spreading connection points
+    if(o.fromOff){from[0]+=o.fromOff[0];from[1]+=o.fromOff[1];}
+    if(o.toOff){to[0]+=o.toOff[0];to[1]+=o.toOff[1];}
+    this.conns.push({from,to,progress:0,color:o.color||'#3ecf8e',width:o.width||2.4,dashed:!!o.dashed,speed:o.speed||0.025});
+  },
+  gray(s,ss,t,ts){this.add(s,ss,t,ts,{color:'rgba(0,0,0,.14)'});},
+  clear(){this.conns=[];},
+  _lerp(a,b,c,d,t){return[a+(c-a)*t,b+(d-b)*t];},
+  _loop(){
+    const c=this.ctx; c.clearRect(0,0,12500,900);
+    for(const cn of this.conns){
+      if(cn.progress<1) cn.progress=Math.min(cn.progress+cn.speed,1);
+      const[x1,y1]=cn.from,[x4,y4]=cn.to;
+      const dx=x4-x1,dy=y4-y1;
+      let x2,y2,x3,y3;
+      if(Math.abs(dx)>=Math.abs(dy)){x2=x1+dx*.42;y2=y1;x3=x4-dx*.42;y3=y4;}
+      else{const d=dy>0?1:-1;x2=x1;y2=y1+Math.abs(dy)*.42*d;x3=x4;y3=y4-Math.abs(dy)*.42*d;}
+      const t=cn.progress;
+      const ab=this._lerp(x1,y1,x2,y2,t),bc=this._lerp(x2,y2,x3,y3,t),cd=this._lerp(x3,y3,x4,y4,t);
+      const abc=this._lerp(ab[0],ab[1],bc[0],bc[1],t),bcd=this._lerp(bc[0],bc[1],cd[0],cd[1],t);
+      const end=this._lerp(abc[0],abc[1],bcd[0],bcd[1],t);
+      c.beginPath();c.strokeStyle=cn.color;c.lineWidth=cn.width;c.lineCap='round';
+      c.setLineDash(cn.dashed?[6,4]:[]);
+      c.moveTo(x1,y1);c.bezierCurveTo(ab[0],ab[1],abc[0],abc[1],end[0],end[1]);c.stroke();
+      if(cn.progress>.4){
+        const a=Math.atan2(end[1]-abc[1],end[0]-abc[0]);
+        c.beginPath();c.setLineDash([]);c.strokeStyle=cn.color;c.lineWidth=cn.width*.9;
+        c.moveTo(end[0],end[1]);c.lineTo(end[0]-8*Math.cos(a-.45),end[1]-8*Math.sin(a-.45));
+        c.moveTo(end[0],end[1]);c.lineTo(end[0]-8*Math.cos(a+.45),end[1]-8*Math.sin(a+.45));
+        c.stroke();
+      }
+    }
+    requestAnimationFrame(()=>this._loop());
+  }
+};
+
+// ═══════════════════════════════════════
+// MODULE: UI
+// ═══════════════════════════════════════
+const UI={
+  $(id){return document.getElementById(id);},
+  on(id){this.$(id)?.classList.add('on');},
+  off(id){this.$(id)?.classList.remove('on');},
+  hl(id){this.$(id)?.classList.add('hl');},
+  active(id){this.$(id)?.classList.add('active');},
+  text(id,v){const e=this.$(id);if(e)e.textContent=v;},
+  allOff(){document.querySelectorAll('.wc,.dc,.gp,.mp,.db,.tx,.sn,.ac,.al,.fd,.src').forEach(e=>{e.classList.remove('on','hl','active','best');});
+    document.querySelectorAll('.wr').forEach(e=>{e.classList.remove('edited','editing');});
+    document.querySelectorAll('.src-diff').forEach(e=>{e.style.display='none';});},
+  av(id,s,e,d,pre='',suf=''){
+    const el=this.$(id);if(!el)return;const t0=performance.now();
+    (function f(n){const p=Math.min((n-t0)/d,1);
+      el.textContent=pre+Math.floor(s+(e-s)*p).toLocaleString()+suf;
+      if(p<1)requestAnimationFrame(f);})(t0);
+  }
+};
+
+// ═══════════════════════════════════════
+// MODULE: Camera
+// ═══════════════════════════════════════
+const Camera={x:0,y:0,s:1,W:document.getElementById('world'),
+  pan(x,y=0,s=1){this.x=x;this.y=y;this.s=s;this.W.style.transform=`translate(${x}px,${y}px) scale(${s})`;}};
+
+// ═══════════════════════════════════════
+// MODULE: Cursor
+// ═══════════════════════════════════════
+const Cursor={el:document.getElementById('cur'),
+  move(wx,wy){this.el.style.opacity='1';this.el.style.left=(wx+Camera.x)+'px';this.el.style.top=(wy+Camera.y)+'px';},
+  hide(){this.el.style.opacity='0';}};
+
+const Label={el:document.getElementById('sl'),
+  set(step,t){this.el.innerHTML=`<span class="step-num">Step ${step}</span> — ${t}`;this.el.classList.add('on');},
+  off(){this.el.classList.remove('on');}};
+
+const W=ms=>new Promise(r=>setTimeout(r,ms));
+
+function reset(){
+  UI.allOff();Lines.clear();Label.off();Cursor.hide();Camera.pan(0,0,1);
+  const rv={v_src:'0',v_recs:'0',v_steps:'0',v_roles:'0',v_fleet:'0',v_fstatus:'Deploying...',
+    v_simrun:'0',v_best:'—',v_tone:'Professional',v_cad:'Day 1, 3, 7, 14',v_dsrc:'CRM + Email',v_slang:'DE · Auto',
+    sr1_rr:'—',sr1_mt:'—',sr1_wr:'—',sr2_rr:'—',sr2_mt:'—',sr2_wr:'—',sr3_rr:'—',sr3_mt:'—',sr3_wr:'—',
+    v_oa:'0',v_oc:'0',
+    v_ei1:'—',v_ei2:'—',v_ei3:'—',v_pat:'0',v_wrd:'+0%',
+    v_sel:'—',v_mk:'0 / 7',v_la:'0',
+    v_pip:'€0',v_cvr:'0%',v_cls:'0',v_stl:'0',v_lst:'0',v_cpl:'€0',
+    v_exp:'0',v_enh:'0'};
+  for(const[k,v]of Object.entries(rv))UI.text(k,v);
+}
+
+// ═══════════════════════════════════════
+// SCENE 1: Connect Data
+// ═══════════════════════════════════════
+async function s1(){
+  Label.set('1','Connect Your Data Sources');
+  Camera.pan(60,30);
+  await W(400);
+  UI.on('a_ws'); await W(500);
+  UI.on('a_add'); Lines.gray('a_ws','r','a_add','l');
+  await W(600);
+  Cursor.move(990,280); await W(1000); UI.hl('a_add'); await W(400);
+
+  // Spread connection points vertically along workspace left edge
+  const srcs=[['a_crm','ax1',-60],['a_email','ax2',-30],['a_prod','ax3',0],['a_monday','ax4',30],['a_meet','ax5',60]];
+  for(let i=0;i<srcs.length;i++){
+    UI.on(srcs[i][0]); UI.on(srcs[i][1]);
+    await W(100);
+    Lines.add(srcs[i][0],'r','a_ws','l',{toOff:[0,srcs[i][2]]});
+    UI.av('v_src',i,i+1,200);
+    await W(350);
+  }
+  UI.av('v_recs',0,12847,1200);
+  await W(2000);
+}
+
+// ═══════════════════════════════════════
+// SCENE 2: Workflow + Agent Roles
+// ═══════════════════════════════════════
+async function s2(){
+  Label.set('2','Build Sales Workflow — Each Step = An Agent');
+  Camera.pan(-1000,30);
+  await W(600);
+  Lines.add('a_ws','r','b_builder','l');
+  await W(300);
+  UI.on('b_builder'); await W(400);
+
+  const steps=['b1','b2','b3','b4','b5','b6','b7','b8'];
+  for(let i=0;i<steps.length;i++){
+    UI.on(steps[i]); UI.av('v_steps',i,i+1,150); UI.av('v_roles',i,i+1,150);
+    await W(300);
+  }
+
+  // Connect steps
+  Lines.add('b_builder','r','b1','l'); Lines.add('b_builder','r','b4','l'); await W(150);
+  Lines.add('b1','r','b2','l'); Lines.add('b4','r','b5','l'); await W(150);
+  Lines.add('b2','r','b3','l'); Lines.add('b5','r','b6','l'); await W(150);
+  Lines.add('b3','b','b7','t'); Lines.add('b6','b','b7','t'); await W(150);
+  Lines.add('b7','r','b8','l'); await W(300);
+
+  for(const s of steps){UI.active(s); await W(100);}
+  UI.on('b_ready');
+  await W(1800);
+}
+
+// ═══════════════════════════════════════
+// SCENE 3: Spin Up Agent Fleet
+// ═══════════════════════════════════════
+async function s3(){
+  Label.set('3','Spin Up Agent Fleet — DACH Market');
+  Camera.pan(-2800,0);
+  await W(600);
+  Lines.add('b_ready','r','c_orch','l');
+  await W(300);
+  UI.on('c_orch'); await W(400);
+
+  // Agents appear one by one — spread connection points on orchestrator
+  const agOffsets=[-65,-45,-25,-5,15,-65,-45,-25,-5,15]; // spread along right edge
+  for(let i=1;i<=10;i++){
+    Lines.add('c_orch','r','ag'+i,'l',{fromOff:[0,agOffsets[i-1]]});
+    UI.on('ag'+i);
+    UI.av('v_fleet',i-1,i,150);
+    await W(250);
+  }
+  UI.text('v_fstatus','All Online ✓');
+  UI.on('c_fleet');
+  Cursor.move(4000,350);
+  await W(2200);
+}
+
+// ═══════════════════════════════════════
+// SCENE 4: Multi-Instance Simulation
+// ═══════════════════════════════════════
+// Helper: flash a param row to show editing
+async function editParam(rowId, valueId, newVal) {
+  const row = UI.$(rowId);
+  if (row) { row.classList.add('editing'); }
+  await W(400);
+  UI.text(valueId, newVal);
+  await W(300);
+  if (row) { row.classList.remove('editing'); row.classList.add('edited'); }
+  await W(300);
+}
+
+async function s4(){
+  Label.set('4','Simulate → Tune → Re-Run → Compare → Pick Best');
+  Camera.pan(-4400,20);
+  await W(600);
+  Lines.add('c_orch','r','d_sim','l');
+  await W(300);
+  UI.on('d_sim'); await W(300);
+  UI.on('d_tune'); await W(400);
+  UI.on('d_run'); await W(500);
+
+  // ── SIM #1: Click Run → agents spin → results ──
+  Cursor.move(5100,675);
+  await W(800);
+  UI.hl('d_run');
+  await W(400);
+  UI.av('v_simrun',0,1,300);
+  UI.on('sa1'); UI.on('sa2'); UI.on('sa3');
+  Lines.add('d_sim','r','sr1','l',{fromOff:[0,-55]});
+  await W(500);
+  UI.on('sr1');
+  await W(300);
+  UI.text('sr1_rr','22%'); UI.text('sr1_mt','12'); UI.text('sr1_wr','18%');
+  UI.$('sr1_diff')&&(UI.$('sr1_diff').style.display='block');
+  UI.$('sr1_diff')&&(UI.$('sr1_diff').textContent='Baseline: default parameters');
+  await W(1200);
+
+  // ── USER EDITS CADENCE: cursor → param row → flash → change ──
+  Cursor.move(5200,540);
+  await W(800);
+  await editParam('p_cad', 'v_cad', 'Day 1, 3, 5, 10');
+  await W(300);
+
+  // ── SIM #2: Click Run again ──
+  Cursor.move(5100,675);
+  await W(600);
+  UI.av('v_simrun',1,2,300);
+  UI.on('sb1'); UI.on('sb2'); UI.on('sb3');
+  Lines.add('d_sim','r','sr2','l',{fromOff:[0,0]});
+  await W(500);
+  UI.on('sr2');
+  UI.$('sr2_diff')&&(UI.$('sr2_diff').style.display='block');
+  await W(300);
+  UI.text('sr2_rr','31%'); UI.text('sr2_mt','19'); UI.text('sr2_wr','26%');
+  await W(1200);
+
+  // ── USER ADDS DATA SOURCES: cursor → sources row → flash → change ──
+  Cursor.move(5200,570);
+  await W(800);
+  await editParam('p_dsrc', 'v_dsrc', 'CRM + Email + Notes');
+  await W(300);
+
+  // ── SIM #3: Click Run again → BEST ──
+  Cursor.move(5100,675);
+  await W(600);
+  UI.av('v_simrun',2,3,300);
+  UI.on('sc1'); UI.on('sc2'); UI.on('sc3');
+  Lines.add('d_sim','r','sr3','l',{fromOff:[0,55]});
+  await W(500);
+  UI.on('sr3');
+  UI.$('sr3_diff')&&(UI.$('sr3_diff').style.display='block');
+  await W(300);
+  UI.text('sr3_rr','41%'); UI.text('sr3_mt','28'); UI.text('sr3_wr','34%');
+  await W(600);
+
+  // Highlight #3 as best
+  UI.$('sr3').classList.add('best');
+  UI.text('v_best','Sim #3 · 34%');
+  await W(800);
+
+  UI.on('d_pick');
+  await W(2000);
+}
+
+// ═══════════════════════════════════════
+// SCENE 5: Outreach Agents
+// ═══════════════════════════════════════
+async function s5(){
+  Label.set('5','Outreach Agents Deliver Across Channels');
+  Camera.pan(-6050,20);
+  await W(600);
+  Lines.add('d_sim','r','e_out','l');
+  await W(300);
+  UI.on('e_out'); UI.av('v_oa',0,6,600); await W(400);
+
+  const chs=['e_ch1','e_ch2','e_ch3','e_ch4'];
+  const chOff=[-50,-15,20,50];
+  for(let i=0;i<chs.length;i++){
+    Lines.add('e_out','r',chs[i],'l',{fromOff:[0,chOff[i]]});
+    UI.on(chs[i]); UI.av('v_oc',i,i+1,150);
+    await W(300);
+  }
+
+  // Agent → Installer
+  Lines.add('e_ch1','r','ea1','l'); UI.on('ea1'); await W(200);
+  Lines.add('ea1','r','e_i1','l'); UI.on('e_i1'); await W(300);
+  UI.text('v_ei1','Opened 3× · Clicked pricing');
+
+  Lines.add('e_ch2','r','ea2','l'); UI.on('ea2'); await W(200);
+  Lines.add('ea2','r','e_i2','l'); UI.on('e_i2'); await W(300);
+  UI.text('v_ei2','Replied: "interested"');
+
+  Lines.add('e_ch3','r','ea3','l'); UI.on('ea3'); await W(200);
+  Lines.add('ea3','r','e_i3','l'); UI.on('e_i3'); await W(300);
+  UI.text('v_ei3','Meeting booked Jun 12');
+
+  await W(2000);
+}
+
+// ═══════════════════════════════════════
+// SCENE 6: Feedback + Agent Learning
+// ═══════════════════════════════════════
+async function s6(){
+  Label.set('6','Feedback Loop — All Agents Learn in Real-Time');
+  Camera.pan(-7600,20);
+  await W(600);
+  Lines.add('e_out','r','f_react','l');
+  await W(300);
+  UI.on('f_react'); await W(400);
+
+  Lines.add('f_react','r','f_w','l',{fromOff:[0,-40]}); UI.on('f_w'); UI.on('fl1'); await W(500);
+  Lines.add('f_react','r','f_s','l',{fromOff:[0,0]}); UI.on('f_s'); UI.on('fl2'); await W(500);
+  Lines.add('f_react','r','f_l','l',{fromOff:[0,40]}); UI.on('f_l'); UI.on('fl3'); await W(500);
+
+  UI.av('v_pat',0,14,1000);
+  UI.text('v_wrd','+12%');
+
+  Lines.add('f_l','l','f_react','b',{color:'#e8956a',dashed:true});
+  UI.on('f_loop');
+  await W(2200);
+}
+
+// (s7 and s8 replaced by s_experts and s_deploy above)
+
+// ═══════════════════════════════════════
+// SCENE 7b: Expert Agent Assembly (BEFORE deploy)
+// ═══════════════════════════════════════
+async function s_experts(){
+  Label.set('7','Expert Agents Review & Enhance Before Deploy');
+  Camera.pan(-9850,20);
+  await W(600);
+  Lines.add('f_react','r','h_rev','l');
+  await W(300);
+  UI.on('h_rev'); await W(400);
+
+  const exps=['ex1','ex2','ex3','ex4'];
+  const exOff=[-55,-18,18,55];
+  for(let i=0;i<exps.length;i++){
+    Lines.add('h_rev','r',exps[i],'l',{fromOff:[0,exOff[i]]});
+    UI.on(exps[i]); UI.av('v_exp',i,i+1,200);
+    await W(500);
+  }
+  UI.av('v_enh',0,12,1000);
+  await W(600);
+  UI.on('h_final');
+  await W(2000);
+}
+
+// ═══════════════════════════════════════
+// SCENE 8b: Deploy to Production (AFTER expert review)
+// ═══════════════════════════════════════
+async function s_deploy(){
+  Label.set('8','Deploy to Production — 24 Agents · 7 Markets');
+  Camera.pan(-8900,30);
+  await W(600);
+
+  // Connect from expert review
+  Lines.add('h_final','l','g_deploy','r',{color:'#3ecf8e'});
+  await W(400);
+
+  // Fleet dots appear
+  for(let i=1;i<=24;i++){UI.on('fd'+i); await W(60);}
+  UI.on('fdt1'); UI.on('fdt2'); UI.on('fdt3');
+  await W(600);
+
+  UI.on('g_deploy');
+  UI.text('v_sel','DACH Workflow A · Enhanced');
+  UI.av('v_mk',0,7,1500,'',` / 7`);
+  UI.av('v_la',0,24,1200);
+  await W(800);
+
+  Lines.add('g_deploy','r','g_dash','l');
+  UI.on('g_dash');
+  await W(500);
+
+  // Simulate live metrics changing over time
+  const frames=[
+    {p:180000,c:8,cl:2,st:5,lo:3,cp:42},
+    {p:620000,c:18,cl:8,st:12,lo:7,cp:28},
+    {p:1400000,c:26,cl:18,st:14,lo:11,cp:19},
+    {p:2400000,c:34,cl:31,st:9,lo:14,cp:12},
+  ];
+  for(const f of frames){
+    UI.av('v_pip',0,f.p,800,'€');
+    UI.av('v_cvr',0,f.c,600,'','%');
+    UI.av('v_cls',0,f.cl,600);
+    UI.av('v_stl',0,f.st,600);
+    UI.av('v_lst',0,f.lo,600);
+    UI.av('v_cpl',0,f.cp,600,'€');
+    await W(1100);
+  }
+  UI.on('g_live');
+  Cursor.move(8100,550);
+  await W(3000);
+}
+
+// ═══════════════════════════════════════
+// MAIN — Expert review BEFORE deploy
+// ═══════════════════════════════════════
+async function main(){
+  Lines.init();
+  while(true){
+    reset(); await W(500);
+    await s1(); await s2(); await s3(); await s4();
+    await s5(); await s6();
+    await s_experts();  // Step 7: Review & enhance
+    await s_deploy();   // Step 8: Deploy enhanced workflow
+    Label.off(); Cursor.hide(); await W(3000);
+  }
+}
+main();
+</script>
+</body>
+</html>
