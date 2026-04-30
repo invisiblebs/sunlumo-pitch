@@ -1,0 +1,6 @@
+# local-only — not for the gh-pages branch
+back/
+node_modules/
+.env
+*.log
+.DS_Store

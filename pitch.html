@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sunlumo AI — How it works</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c10;--bg2:#0e1118;--bg3:#131720;
+  --amber:#f5a623;--amber-dim:#c47d0e;--amber-glow:rgba(245,166,35,0.15);
+  --cyan:#4dd9e0;--white:#f0ede8;--muted:#7a8090;
+  --border:rgba(255,255,255,0.07);--border-amber:rgba(245,166,35,0.25);
+  --font-display:'Syne',sans-serif;--font-mono:'IBM Plex Mono',monospace;--font-body:'IBM Plex Sans',sans-serif;
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --ease-in-out:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:var(--font-body);overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--amber-dim);border-radius:2px;}
+
+/* ─────── nav ─────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 40px;background:rgba(10,12,16,0.62);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--white);letter-spacing:-0.02em;}
+.nav-logo span{color:var(--amber);}
+.nav-links{display:flex;gap:34px;}
+.nav-links a{font-family:var(--font-mono);font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--amber);}
+.nav-right{display:flex;gap:10px;align-items:center;}
+.nav-wp{font-family:var(--font-mono);font-size:11px;padding:9px 18px;background:transparent;border:1px solid var(--border-amber);color:var(--amber);text-decoration:none;letter-spacing:0.06em;text-transform:uppercase;transition:all 0.2s;}
+.nav-wp:hover{background:var(--amber-glow);border-color:var(--amber);}
+.nav-cta{font-family:var(--font-mono);font-size:11px;padding:9px 20px;background:var(--amber);color:#0a0c10;border:none;cursor:pointer;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);text-decoration:none;display:inline-block;transition:background 0.2s;}
+.nav-cta:hover{background:#ffbe44;}
+
+/* ─────── intro ─────── */
+.intro{min-height:92vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:160px 24px 80px;position:relative;overflow:hidden;}
+.intro::before{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse at 50% 30%,rgba(245,166,35,0.10),transparent 55%),
+  radial-gradient(ellipse at 50% 80%,rgba(77,217,224,0.05),transparent 60%);pointer-events:none;}
+.intro-grid{position:absolute;inset:0;background-image:
+  linear-gradient(rgba(245,166,35,.04) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(245,166,35,.04) 1px,transparent 1px);
+  background-size:40px 40px;mask-image:radial-gradient(ellipse at center,black,transparent 70%);
+  -webkit-mask-image:radial-gradient(ellipse at center,black,transparent 70%);}
+.intro-label{font-family:var(--font-mono);font-size:11px;color:var(--amber);letter-spacing:0.22em;text-transform:uppercase;margin-bottom:24px;position:relative;z-index:2;display:inline-flex;align-items:center;gap:10px;}
+.intro-label::before,.intro-label::after{content:'';width:28px;height:1px;background:var(--amber-dim);}
+.intro-h1{font-family:var(--font-display);font-weight:800;font-size:clamp(40px,6vw,76px);line-height:1.04;letter-spacing:-0.03em;color:var(--white);max-width:980px;position:relative;z-index:2;}
+.intro-h1 em{color:var(--amber);font-style:normal;}
+.intro-sub{margin-top:26px;max-width:680px;font-size:16px;line-height:1.7;color:var(--muted);font-weight:300;position:relative;z-index:2;}
+.intro-cta{margin-top:52px;display:flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.18em;text-transform:uppercase;position:relative;z-index:2;}
+.intro-cta .arrow{display:inline-block;width:24px;height:1px;background:var(--amber);position:relative;animation:arrowDown 1.8s var(--ease-in-out) infinite;}
+.intro-cta .arrow::after{content:'';position:absolute;right:0;top:-3px;width:7px;height:7px;border-right:1px solid var(--amber);border-bottom:1px solid var(--amber);transform:rotate(-45deg);}
+@keyframes arrowDown{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   STAGE — sticky, full-viewport. Sim fills the entire space; text panel
+   floats over it. Scroll drives scene transitions through 8 100vh "drivers".
+   ─────────────────────────────────────────────────────────────────────────── */
+.stage{position:relative;}
+.stage-pin{position:sticky;top:0;height:100vh;overflow:hidden;background:#eeecea;}
+.stage-pin::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(10,12,16,0.18),transparent 12%,transparent 78%,rgba(10,12,16,0.55));z-index:5;}
+
+/* live simulation iframe — laid out for 1440×900, scaled to fill. */
+.sim-canvas{position:absolute;left:0;top:0;width:1440px;height:900px;border:0;display:block;
+  transform-origin:top left;
+  /* scale & offset are computed at runtime so the demo's content stays centered */
+  transform:translate(var(--sim-x,0),var(--sim-y,0)) scale(var(--sim-scale,1));
+  transition:opacity .45s var(--ease-out),filter .45s var(--ease-out);}
+.sim-canvas.dim{opacity:0;filter:blur(4px);pointer-events:none;}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   TEAM GRID — final step (scene 9). Sim fades out, team cards fade in
+   over the same stage area. Two cards: Mason (left) + Mo (right).
+   ─────────────────────────────────────────────────────────────────────────── */
+.team-grid{position:absolute;inset:0;z-index:9;
+  padding:88px 56px 56px;
+  display:grid;grid-template-columns:1fr 1fr;gap:28px;align-content:center;
+  background:linear-gradient(180deg,rgba(10,12,16,0.94),#0a0c10 60%);
+  opacity:0;pointer-events:none;transition:opacity .55s var(--ease-out);}
+.team-grid.active{opacity:1;pointer-events:auto;}
+.team-card{background:var(--bg3);border:1px solid var(--border);padding:28px 28px 26px;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  position:relative;overflow:hidden;
+  transform:translateY(18px);opacity:0;transition:transform .55s var(--ease-out),opacity .55s var(--ease-out),border-color .25s ease;}
+.team-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(245,166,35,0.08),transparent 60%);pointer-events:none;opacity:0;transition:opacity .3s ease;}
+.team-card:hover{border-color:var(--border-amber);}
+.team-card:hover::after{opacity:1;}
+.team-grid.active .team-card{opacity:1;transform:translateY(0);}
+.team-grid.active .team-card:nth-child(1){transition-delay:.10s;}
+.team-grid.active .team-card:nth-child(2){transition-delay:.20s;}
+
+.tc-avatar{width:160px;height:160px;border-radius:50%;overflow:hidden;border:1px solid var(--border);background:#0d1220;position:relative;margin-bottom:18px;flex-shrink:0;
+  transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;}
+.tc-avatar::before{content:'';position:absolute;inset:-3px;border-radius:50%;
+  background:conic-gradient(from 0deg,rgba(245,166,35,0),rgba(245,166,35,0.6),rgba(77,217,224,0.5),rgba(245,166,35,0));
+  filter:blur(6px);opacity:0;transition:opacity .25s ease;animation:tcSpin 6s linear infinite;}
+.tc-avatar img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease,filter .35s ease;}
+.team-card:hover .tc-avatar{transform:translateY(-3px) scale(1.02);border-color:var(--border-amber);box-shadow:0 12px 40px rgba(0,0,0,0.35);}
+.team-card:hover .tc-avatar::before{opacity:1;}
+.team-card:hover .tc-avatar img{transform:scale(1.06);filter:saturate(1.05) contrast(1.05);}
+@keyframes tcSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+.tc-name{font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--white);letter-spacing:-0.015em;margin-bottom:6px;display:inline-flex;align-items:center;gap:10px;}
+.tc-li{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:5px;background:#0A66C2;color:#fff;flex-shrink:0;
+  transition:transform .2s ease,box-shadow .2s ease;text-decoration:none;
+  box-shadow:0 1px 4px rgba(10,102,194,.4);}
+.tc-li:hover{transform:translateY(-1px) scale(1.06);box-shadow:0 4px 12px rgba(10,102,194,.55);}
+.tc-li svg{width:14px;height:14px;fill:#fff;display:block;}
+.tc-role{font-family:var(--font-mono);font-size:11.5px;color:var(--amber);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:14px;}
+.tc-bio{font-size:14px;line-height:1.65;color:var(--white);font-weight:400;text-align:left;margin-bottom:14px;max-width:460px;}
+.tc-creds{list-style:none;display:flex;flex-direction:column;gap:7px;text-align:left;width:100%;max-width:460px;}
+.tc-creds li{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.16);
+  font-size:13px;color:rgba(255,255,255,0.92);font-weight:500;line-height:1.4;}
+.tc-creds li::before{content:'';flex-shrink:0;width:6px;height:6px;border-radius:50%;background:var(--amber);margin-top:7px;}
+.tc-creds li em{color:var(--amber);font-style:normal;font-weight:700;}
+
+/* boot veil — covers the demo while it spins up */
+.sim-veil{position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#f5f3f0,#dcdad7);transition:opacity 0.6s ease;}
+.sim-veil.gone{opacity:0;pointer-events:none;}
+.sim-veil .vt{font-family:var(--font-mono);font-size:11px;color:#7a8090;letter-spacing:0.22em;text-transform:uppercase;display:flex;align-items:center;gap:10px;}
+.sim-veil .vt::before{content:'';width:8px;height:8px;border-radius:50%;background:#3ecf8e;animation:livePulse 1.4s infinite;}
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(62,207,142,.55);}50%{box-shadow:0 0 0 7px rgba(62,207,142,0);}}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   SCENE LABEL — anchored top-right, just below the nav. Carries the step
+   index, the category line, AND the bold scene title — so the viewer always
+   sees "what is going on" without looking elsewhere. Width-constrained so
+   it never crowds the simulation's right-edge content.
+   ─────────────────────────────────────────────────────────────────────────── */
+.scene-panel{position:absolute;top:84px;right:24px;z-index:11;width:340px;
+  background:rgba(8,10,14,0.88);backdrop-filter:blur(16px) saturate(1.05);-webkit-backdrop-filter:blur(16px) saturate(1.05);
+  border:1px solid rgba(245,166,35,0.22);border-left:3px solid var(--amber);
+  padding:9px 14px 11px;
+  box-shadow:0 16px 40px rgba(0,0,0,0.42),0 0 0 1px rgba(255,255,255,0.04) inset;
+  opacity:0;transform:translateY(-10px);
+  transition:opacity .35s var(--ease-out),transform .35s var(--ease-out);
+  pointer-events:none;}
+.scene-panel.active{opacity:1;transform:translateY(0);pointer-events:auto;}
+.scene-panel.exit-up{transform:translateY(-10px);opacity:0;}
+.scene-panel.exit-down{transform:translateY(10px);opacity:0;}
+
+.panel-meta{display:flex;align-items:center;gap:7px;margin-bottom:3px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);}
+.panel-live{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:livePulse 1.4s infinite;flex-shrink:0;}
+.panel-step .ix{color:var(--amber);font-weight:700;}
+.panel-cat{color:var(--amber);}
+.panel-title{font-family:var(--font-display);font-weight:800;font-size:18px;line-height:1.18;letter-spacing:-0.015em;color:var(--white);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.panel-title em{color:var(--amber);font-style:normal;}
+
+/* staggered reveal */
+.scene-panel .panel-meta,.scene-panel .panel-title{
+  opacity:0;transform:translateY(4px);transition:opacity .3s var(--ease-out),transform .3s var(--ease-out);}
+.scene-panel.active .panel-meta{opacity:1;transform:translateY(0);transition-delay:.04s;}
+.scene-panel.active .panel-title{opacity:1;transform:translateY(0);transition-delay:.12s;}
+
+/* ── progress rail (along the very bottom edge, beneath the panel) ── */
+.prog{position:absolute;left:56px;right:56px;bottom:10px;z-index:11;display:flex;align-items:center;gap:14px;}
+.prog-track{flex:1;height:2px;background:rgba(255,255,255,0.16);position:relative;overflow:hidden;}
+.prog-track::after{content:'';position:absolute;left:0;top:0;height:100%;width:var(--prog,12.5%);background:linear-gradient(90deg,var(--amber),var(--cyan));transition:width .6s var(--ease-out);}
+.prog-ticks{display:flex;gap:6px;flex-shrink:0;}
+.prog-tick{width:8px;height:8px;background:rgba(255,255,255,0.22);border-radius:50%;transition:background 0.3s,transform 0.3s;cursor:pointer;}
+.prog-tick.done{background:var(--amber-dim);}
+.prog-tick.active{background:var(--amber);transform:scale(1.35);box-shadow:0 0 0 4px var(--amber-glow);}
+.prog-tick:hover{background:var(--white);}
+
+/* ── scroll drivers — each 100vh; their position drives which scene is active ── */
+.drivers{position:relative;}
+.driver{height:100vh;}
+
+/* ─────── outro / CTA ─────── */
+.outro{padding:160px 24px;text-align:center;background:var(--bg2);border-top:1px solid var(--border);position:relative;overflow:hidden;}
+.outro::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(245,166,35,0.08),transparent 60%);pointer-events:none;}
+.outro h2{font-family:var(--font-display);font-weight:700;font-size:clamp(34px,4.5vw,58px);line-height:1.05;color:var(--white);max-width:760px;margin:0 auto;letter-spacing:-0.025em;position:relative;}
+.outro h2 em{color:var(--amber);font-style:normal;}
+.outro p{margin-top:24px;max-width:580px;margin-left:auto;margin-right:auto;font-size:16px;line-height:1.75;color:var(--muted);position:relative;}
+.outro-actions{margin-top:48px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;}
+.btn-primary{font-family:var(--font-mono);font-size:13px;padding:16px 34px;background:var(--amber);color:#0a0c10;border:none;cursor:pointer;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);text-decoration:none;display:inline-block;transition:background 0.2s,transform 0.2s;}
+.btn-primary:hover{background:#ffbe44;transform:translateY(-2px);}
+.btn-secondary{font-family:var(--font-mono);font-size:13px;padding:15px 32px;background:transparent;border:1px solid var(--border-amber);color:var(--amber);cursor:pointer;letter-spacing:0.07em;text-transform:uppercase;text-decoration:none;display:inline-block;transition:background 0.2s;}
+.btn-secondary:hover{background:var(--amber-glow);}
+
+footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 48px;display:flex;justify-content:space-between;align-items:center;}
+.footer-logo{font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--muted);}
+.footer-logo span{color:var(--amber);}
+.footer-note{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.05em;}
+
+@media (max-width: 880px){
+  .scene-panel{left:16px;right:16px;width:auto;top:88px;}
+  .step-pill{right:16px;top:88px;}
+  .prog{left:16px;right:16px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Sunlumo<span>AI</span></div>
+  <div class="nav-links">
+    <a href="#" class="active">How it works</a>
+  </div>
+  <div class="nav-right">
+    <a href="https://www.linkedin.com/in/mahmadvand/" target="_blank" rel="noopener" class="nav-wp">Talk to us</a>
+  </div>
+</nav>
+
+<section class="intro">
+  <div class="intro-grid"></div>
+  <div class="intro-label">How it works · End-to-end</div>
+  <h1 class="intro-h1">From <em>raw data</em> to a calibrated campaign,<br>in eight observable steps.</h1>
+  <p class="intro-sub">Watch the operating loop your team will run on day 14 — running live as you scroll. Each step has its own state. Scroll forward to advance, scroll back to return.</p>
+  <div class="intro-cta">Scroll to begin <span class="arrow"></span></div>
+</section>
+
+<!-- ─────── full-bleed sticky stage ─────── -->
+<section class="stage" id="stage">
+
+  <div class="stage-pin">
+    <iframe class="sim-canvas" id="simFrame" src="demo.html?embed=1" title="Sunlumo simulation engine" sandbox="allow-scripts allow-same-origin"></iframe>
+
+    <div class="sim-veil" id="simVeil"><div class="vt">Booting simulation engine</div></div>
+
+    <!-- Team & Portfolio — final step (scene 9). Sim fades out, this fades in. -->
+    <div class="team-grid" id="teamGrid">
+      <article class="team-card">
+        <div class="tc-avatar"><img src="mason.jpg" alt="Dr. Mason Ahmadvand"></div>
+        <div class="tc-name">Dr. Mason Ahmadvand
+          <a class="tc-li" href="https://www.linkedin.com/in/mahmadvand/" target="_blank" rel="noopener noreferrer" aria-label="Mason on LinkedIn" title="LinkedIn">
+            <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.27V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+          </a>
+        </div>
+        <div class="tc-role">Founder · AI &amp; Security Lead</div>
+        <p class="tc-bio">15+ years building software security and infrastructure. PhD-trained engineer behind the Zircuit blockchain — kept <strong>$50B+</strong> in digital assets safe across Ethereum &amp; Solana. Now applying that rigour to simulation-tested B2B sales for the European installer market.</p>
+        <ul class="tc-creds">
+          <li><em>PhD</em> Computer Security, TU Munich</li>
+          <li><em>$50B+</em> in digital assets safeguarded across Ethereum &amp; Solana</li>
+          <li><em>Led</em> the Zircuit blockchain build — AI + compliance baked in</li>
+          <li><em>Ex</em>-SAP Cloud Security head · Google Research · Quantstamp</li>
+        </ul>
+      </article>
+
+      <article class="team-card">
+        <div class="tc-avatar"><img src="mo.png" alt="Mohammad Moein"></div>
+        <div class="tc-name">Mohammad Moein
+          <a class="tc-li" href="https://www.linkedin.com/in/mohammadmoein/" target="_blank" rel="noopener noreferrer" aria-label="Mo on LinkedIn" title="LinkedIn">
+            <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.27V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+          </a>
+        </div>
+        <div class="tc-role">Founder · ML &amp; Research Lead</div>
+        <p class="tc-bio">A decade of translating machine-learning research into market impact: computer vision at <strong>Trayzi</strong>, computational toxicology at <strong>Aalto</strong>, DILI-prediction algorithms with <strong>Johnson &amp; Johnson</strong>, and now agentic AI for education and B2B sales.</p>
+        <ul class="tc-creds">
+          <li><em>10y</em> ML research → production deployment</li>
+          <li><em>J&amp;J</em> — DILI-prediction algorithms for drug safety</li>
+          <li><em>Aalto</em> — computational toxicology research</li>
+          <li><em>Trayzi</em> — applied computer vision at scale</li>
+        </ul>
+      </article>
+    </div>
+
+    <!-- Scene label (top-right): compact 2-line panel — meta line + title — kept short
+         enough to clear scene right-edge content (Weber installer, expert agents, fleet) -->
+    <article class="scene-panel active" data-scene="1">
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">01</span>/09</span><span>·</span><span class="panel-cat">Behavioural Prior</span></div>
+      <div class="panel-title">Connect <em>your</em> data.</div>
+    </article>
+
+    <article class="scene-panel" data-scene="2">
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">02</span>/09</span><span>·</span><span class="panel-cat">Workflow = Agents</span></div>
+      <div class="panel-title">Each step is <em>an agent</em>.</div>
+    </article>
+
+    <article class="scene-panel" data-scene="3">
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">03</span>/09</span><span>·</span><span class="panel-cat">Fleet Orchestration</span></div>
+      <div class="panel-title">Spin up <em>DACH</em> fleet.</div>
+    </article>
+
+    <article class="scene-panel" data-scene="4">
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">04</span>/09</span><span>·</span><span class="panel-cat">Simulation</span></div>
+      <div class="panel-title">Test before you <em>send</em>.</div>
+    </article>
+
+    <article class="scene-panel" data-scene="5">
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">05</span>/09</span><span>·</span><span class="panel-cat">Warmest Signals First</span></div>
+      <div class="panel-title">The <em>right</em> channel.</div>
+    </article>
+
+    <article class="scene-panel" data-scene="6">
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">06</span>/09</span><span>·</span><span class="panel-cat">Live Updating</span></div>
+      <div class="panel-title">Every result tightens.</div>
+    </article>
+
+    <article class="scene-panel" data-scene="7">
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">07</span>/09</span><span>·</span><span class="panel-cat">Expert + Human Review</span></div>
+      <div class="panel-title">Reviewed <em>before</em> deploy.</div>
+    </article>
+
+    <article class="scene-panel" data-scene="8">
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">08</span>/09</span><span>·</span><span class="panel-cat">14-Day Checkpoint</span></div>
+      <div class="panel-title"><em>Predicted</em> vs <em>actual</em>.</div>
+    </article>
+
+    <article class="scene-panel" data-scene="9">
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">09</span>/09</span><span>·</span><span class="panel-cat">Team &amp; Portfolio</span></div>
+      <div class="panel-title">Built by <em>operators</em>.</div>
+    </article>
+
+    <!-- bottom progress -->
+    <div class="prog">
+      <div class="prog-track" style="--prog:12.5%;" id="progTrack"></div>
+      <div class="prog-ticks" id="progTicks">
+        <span class="prog-tick active" data-go="1"></span>
+        <span class="prog-tick" data-go="2"></span>
+        <span class="prog-tick" data-go="3"></span>
+        <span class="prog-tick" data-go="4"></span>
+        <span class="prog-tick" data-go="5"></span>
+        <span class="prog-tick" data-go="6"></span>
+        <span class="prog-tick" data-go="7"></span>
+        <span class="prog-tick" data-go="8"></span>
+        <span class="prog-tick" data-go="9"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9 scroll drivers, each 100vh — last drives the Team & Portfolio overlay -->
+  <div class="drivers" id="drivers">
+    <div class="driver" data-scene="1"></div>
+    <div class="driver" data-scene="2"></div>
+    <div class="driver" data-scene="3"></div>
+    <div class="driver" data-scene="4"></div>
+    <div class="driver" data-scene="5"></div>
+    <div class="driver" data-scene="6"></div>
+    <div class="driver" data-scene="7"></div>
+    <div class="driver" data-scene="8"></div>
+    <div class="driver" data-scene="9"></div>
+  </div>
+</section>
+
+<!-- ─────── outro / CTA ─────── -->
+<section class="outro">
+  <h2>Every claim above is <em>empirically</em> testable<br>inside the first month.</h2>
+  <p>We start the day Sunlumo signs. By the 14-day checkpoint you will have working infrastructure, a calibrated simulation engine, and a real campaign in flight.</p>
+  <div class="outro-actions">
+    <a href="https://www.linkedin.com/in/mahmadvand/" target="_blank" rel="noopener" class="btn-primary">Request Phase 0 Contract</a>
+    <a href="https://www.linkedin.com/in/mohammadmoein/" target="_blank" rel="noopener" class="btn-secondary">Schedule a call</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Sunlumo<span>AI</span></div>
+  <div class="footer-note">Simulation-first · GDPR-native · Solar vertical · European</div>
+</footer>
+
+<script>
+(() => {
+  const iframe   = document.getElementById('simFrame');
+  const veil     = document.getElementById('simVeil');
+  const teamGrid = document.getElementById('teamGrid');
+  // stepN no longer exists — the step number lives inside each scene-panel's .ix span;
+  // it auto-shows the correct number when its panel becomes active.
+  const panels   = [...document.querySelectorAll('.scene-panel')];
+  const ticks    = [...document.querySelectorAll('.prog-tick')];
+  const progTrack= document.getElementById('progTrack');
+  const drivers  = [...document.querySelectorAll('.driver')];
+
+  let embedReady = false;
+  let queued = 0;
+  let active = 0;
+  let lastDir = 0; // -1 going back, +1 going forward
+
+  // Mark embedReady once the iframe finishes loading and demo.html has run.
+  // postMessage handles the in-band signal; this load+poll path catches the
+  // race where the iframe sends `embedReady` before our listener attaches.
+  iframe.addEventListener('load', () => {
+    let tries = 0;
+    const id = setInterval(() => {
+      try {
+        if (iframe.contentWindow && iframe.contentWindow.__embedReady) {
+          clearInterval(id);
+          if (!embedReady) {
+            embedReady = true;
+            veil.classList.add('gone');
+            if (queued) sendGoto(queued);
+          }
+        }
+      } catch (e) {/* cross-origin — fall back to postMessage */}
+      if (++tries > 50) clearInterval(id);
+    }, 60);
+  });
+
+  // ── FIT iframe (1440×900 native) into the full area below the nav.
+  //    No bottom panel anymore — scene label is at top-right — so the sim
+  //    gets the entire vh-nav band, maximizing on-screen text readability. ──
+  const NAV_H = 72;
+  function fitSim(){
+    const stage = iframe.parentElement;
+    const W = stage.clientWidth, H = stage.clientHeight;
+    if (!W || !H) return;
+    const availH = Math.max(360, H - NAV_H);
+    const scale = Math.min(W / 1440, availH / 900);
+    const dx = (W - 1440 * scale) / 2;
+    const dy = NAV_H + (availH - 900 * scale) / 2;
+    iframe.style.setProperty('--sim-scale', scale);
+    iframe.style.setProperty('--sim-x', dx + 'px');
+    iframe.style.setProperty('--sim-y', dy + 'px');
+  }
+  fitSim();
+  window.addEventListener('resize', fitSim);
+
+  // ── postMessage handlers from the iframe ──
+  window.addEventListener('message', e => {
+    const m = e.data;
+    if (!m || typeof m !== 'object') return;
+    if (m.type === 'embedReady') {
+      embedReady = true;
+      veil.classList.add('gone');
+      if (queued) sendGoto(queued);
+    }
+  });
+  function sendGoto(n){
+    if (!embedReady) { queued = n; return; }
+    iframe.contentWindow.postMessage({type:'gotoScene', n}, '*');
+  }
+
+  // ── activate scene N: swap panel, update progress, drive iframe / team grid ──
+  function setActive(n){
+    if (n === active) return;
+    const dir = n > active ? 1 : -1;
+    lastDir = dir;
+    panels.forEach(p => {
+      const sc = Number(p.dataset.scene);
+      p.classList.remove('exit-up','exit-down');
+      if (sc === n) {
+        p.classList.add('active');
+      } else if (sc === active) {
+        p.classList.remove('active');
+        p.classList.add(dir > 0 ? 'exit-up' : 'exit-down');
+      } else {
+        p.classList.remove('active');
+      }
+    });
+    ticks.forEach((t,i) => {
+      const idx = i + 1;
+      t.classList.toggle('active', idx === n);
+      t.classList.toggle('done',  idx <  n);
+    });
+    progTrack.style.setProperty('--prog', (n / 9 * 100) + '%');
+
+    if (n === 9) {
+      // Team & Portfolio: hide simulation, reveal team grid.
+      iframe.classList.add('dim');
+      teamGrid.classList.add('active');
+      // Park the simulation at scene 8's end-state so coming back is instant.
+      sendGoto(8);
+    } else {
+      // Sim scenes 1..8: ensure iframe is visible and team grid is hidden.
+      iframe.classList.remove('dim');
+      teamGrid.classList.remove('active');
+      sendGoto(n);
+    }
+    active = n;
+  }
+
+  // ── scroll-driven scene activation ──
+  // Each .driver is 100vh; when its center crosses viewport center, that scene activates.
+  // This means scrolling forward N viewports = scene N+1; scrolling back = previous scene.
+  const io = new IntersectionObserver(entries => {
+    let best = null;
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      if (!best || e.intersectionRatio > best.intersectionRatio) best = e;
+    });
+    if (best) setActive(Number(best.target.dataset.scene));
+  }, { rootMargin: '-45% 0px -45% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] });
+  drivers.forEach(d => io.observe(d));
+
+  // ── click a tick → smooth-scroll to that driver ──
+  ticks.forEach((t, i) => t.addEventListener('click', () => {
+    const target = drivers[i];
+    if (!target) return;
+    const r = target.getBoundingClientRect();
+    window.scrollTo({ top: r.top + window.scrollY - window.innerHeight * 0.4, behavior: 'smooth' });
+  }));
+})();
+</script>
+</body>
+</html>
