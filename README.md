@@ -2,13 +2,14 @@
 
 Live, scroll-driven product pitch for Sunlumo AI: a simulation-tested B2B sales operating system for European battery storage distribution.
 
-**Live**: https://invisiblebs.github.io/sunlumo-pitch/pitch.html
+**Live**: https://invisiblebs.github.io/sunlumo-pitch/
 
 ## Files
 
-- `pitch.html` — entry. Scroll-driven 9-step narrative with a live simulation embedded as an iframe and a Team & Portfolio finale.
-- `demo.html` — the simulation engine. Loaded by `pitch.html?embed=1`. Also runs standalone as a continuous loop.
+- `index.html` — entry. Scroll-driven 9-step narrative with a live simulation embedded as an iframe and a Team & Portfolio finale.
+- `demo.html` — the simulation engine. Loaded by `index.html` with `?embed=1`. Also runs standalone as a continuous loop.
 - `mason.jpg`, `mo.png` — team photos.
+- `.nojekyll` — disables Jekyll on the GitHub Pages branch.
 
 ## Branches
 
