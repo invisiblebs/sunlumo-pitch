@@ -72,28 +72,25 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .sim-canvas.dim{opacity:0;filter:blur(4px);pointer-events:none;}
 
 /* ───────────────────────────────────────────────────────────────────────────
-   TEAM GRID — final step (scene 9). Sim fades out, team cards fade in
-   over the same stage area. Two cards: Mason (left) + Mo (right).
+   TEAM SECTION — standalone flow section after the sticky stage. Modelled on
+   index_with_team.html: two cards on bg3, centered content, animated avatars,
+   muted bio, clickable LinkedIn icon next to each name.
    ─────────────────────────────────────────────────────────────────────────── */
-.team-grid{position:absolute;inset:0;z-index:9;
-  padding:88px 56px 56px;
-  display:grid;grid-template-columns:1fr 1fr;gap:28px;align-content:center;
-  background:linear-gradient(180deg,rgba(10,12,16,0.94),#0a0c10 60%);
-  opacity:0;pointer-events:none;transition:opacity .55s var(--ease-out);}
-.team-grid.active{opacity:1;pointer-events:auto;}
-.team-card{background:var(--bg3);border:1px solid var(--border);padding:28px 28px 26px;
-  display:flex;flex-direction:column;align-items:center;text-align:center;
-  position:relative;overflow:hidden;
-  transform:translateY(18px);opacity:0;transition:transform .55s var(--ease-out),opacity .55s var(--ease-out),border-color .25s ease;}
-.team-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(245,166,35,0.08),transparent 60%);pointer-events:none;opacity:0;transition:opacity .3s ease;}
-.team-card:hover{border-color:var(--border-amber);}
+.team-section{padding:120px 0 96px;background:var(--bg2);border-top:1px solid var(--border);position:relative;}
+.team-section .container{max-width:1100px;margin:0 auto;padding:0 48px;}
+.team-section .section-label{font-family:var(--font-mono);font-size:10px;color:var(--amber);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:14px;}
+.team-section .section-label::before{content:'// ';opacity:0.5;}
+.team-section h2{font-family:var(--font-display);font-weight:700;font-size:clamp(32px,4vw,52px);line-height:1.05;letter-spacing:-0.03em;color:var(--white);}
+.team-section h2 em{color:var(--amber);font-style:normal;}
+.team-section .section-line{width:48px;height:2px;background:var(--amber);margin:24px 0;}
+.team-section .lede{max-width:560px;font-size:16px;line-height:1.7;color:var(--muted);font-weight:300;}
+.team-grid{margin-top:56px;display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
+.team-card{background:var(--bg3);border:1px solid var(--border);padding:32px 28px 28px;text-align:center;position:relative;overflow:hidden;transition:border-color .25s ease,transform .25s ease,box-shadow .25s ease;}
+.team-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(245,166,35,0.06),transparent 60%);pointer-events:none;opacity:0;transition:opacity .3s ease;}
+.team-card:hover{border-color:var(--border-amber);transform:translateY(-2px);box-shadow:0 18px 40px rgba(0,0,0,0.25);}
 .team-card:hover::after{opacity:1;}
-.team-grid.active .team-card{opacity:1;transform:translateY(0);}
-.team-grid.active .team-card:nth-child(1){transition-delay:.10s;}
-.team-grid.active .team-card:nth-child(2){transition-delay:.20s;}
 
-.tc-avatar{width:160px;height:160px;border-radius:50%;overflow:hidden;border:1px solid var(--border);background:#0d1220;position:relative;margin-bottom:18px;flex-shrink:0;
-  transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;}
+.tc-avatar{width:180px;height:180px;margin:0 auto 18px;border-radius:50%;overflow:hidden;border:1px solid var(--border);background:#0d1220;position:relative;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;}
 .tc-avatar::before{content:'';position:absolute;inset:-3px;border-radius:50%;
   background:conic-gradient(from 0deg,rgba(245,166,35,0),rgba(245,166,35,0.6),rgba(77,217,224,0.5),rgba(245,166,35,0));
   filter:blur(6px);opacity:0;transition:opacity .25s ease;animation:tcSpin 6s linear infinite;}
@@ -103,19 +100,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .team-card:hover .tc-avatar img{transform:scale(1.06);filter:saturate(1.05) contrast(1.05);}
 @keyframes tcSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
-.tc-name{font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--white);letter-spacing:-0.015em;margin-bottom:6px;display:inline-flex;align-items:center;gap:10px;}
-.tc-li{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:5px;background:#0A66C2;color:#fff;flex-shrink:0;
-  transition:transform .2s ease,box-shadow .2s ease;text-decoration:none;
-  box-shadow:0 1px 4px rgba(10,102,194,.4);}
-.tc-li:hover{transform:translateY(-1px) scale(1.06);box-shadow:0 4px 12px rgba(10,102,194,.55);}
-.tc-li svg{width:14px;height:14px;fill:#fff;display:block;}
-.tc-role{font-family:var(--font-mono);font-size:11.5px;color:var(--amber);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:14px;}
-.tc-bio{font-size:14px;line-height:1.65;color:var(--white);font-weight:400;text-align:left;margin-bottom:14px;max-width:460px;}
-.tc-creds{list-style:none;display:flex;flex-direction:column;gap:7px;text-align:left;width:100%;max-width:460px;}
-.tc-creds li{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.16);
-  font-size:13px;color:rgba(255,255,255,0.92);font-weight:500;line-height:1.4;}
-.tc-creds li::before{content:'';flex-shrink:0;width:6px;height:6px;border-radius:50%;background:var(--amber);margin-top:7px;}
+.tc-name{font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--white);margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:10px;letter-spacing:-0.01em;}
+.tc-name a{display:inline-flex;}
+.tc-li{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:5px;background:#0A66C2;color:#fff;flex-shrink:0;
+  transition:transform .2s ease,box-shadow .2s ease;text-decoration:none;cursor:pointer;
+  box-shadow:0 1px 4px rgba(10,102,194,.4);position:relative;z-index:2;}
+.tc-li:hover{transform:translateY(-1px) scale(1.08);box-shadow:0 4px 14px rgba(10,102,194,.6);}
+.tc-li svg{width:14px;height:14px;fill:#fff;display:block;pointer-events:none;}
+.tc-role{font-family:var(--font-mono);font-size:13px;color:var(--amber);letter-spacing:0.04em;margin-bottom:16px;}
+.tc-bio{font-size:14.5px;color:var(--muted);line-height:1.65;text-align:left;margin-bottom:14px;}
+.tc-bio strong{color:var(--white);font-weight:500;}
+.tc-creds{list-style:none;display:flex;flex-direction:column;gap:7px;text-align:left;}
+.tc-creds li{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;background:rgba(245,166,35,0.04);border:1px solid rgba(245,166,35,0.12);
+  font-size:13px;color:rgba(255,255,255,0.86);font-weight:400;line-height:1.45;}
+.tc-creds li::before{content:'';flex-shrink:0;width:5px;height:5px;border-radius:50%;background:var(--amber);margin-top:8px;}
 .tc-creds li em{color:var(--amber);font-style:normal;font-weight:700;}
+
+/* reveal-on-scroll */
+.team-card{opacity:0;transform:translateY(24px);}
+.team-section.in .team-card{opacity:1;transform:translateY(0);transition:opacity .55s var(--ease-out),transform .55s var(--ease-out),border-color .25s ease,box-shadow .25s ease;}
+.team-section.in .team-card:nth-child(1){transition-delay:.10s;}
+.team-section.in .team-card:nth-child(2){transition-delay:.22s;}
+
+@media (max-width:760px){
+  .team-grid{grid-template-columns:1fr;}
+}
 
 /* boot veil — covers the demo while it spins up */
 .sim-veil{position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#f5f3f0,#dcdad7);transition:opacity 0.6s ease;}
@@ -222,88 +231,46 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 48px
 
     <div class="sim-veil" id="simVeil"><div class="vt">Booting simulation engine</div></div>
 
-    <!-- Team & Portfolio — final step (scene 9). Sim fades out, this fades in. -->
-    <div class="team-grid" id="teamGrid">
-      <article class="team-card">
-        <div class="tc-avatar"><img src="mason.jpg" alt="Dr. Mason Ahmadvand"></div>
-        <div class="tc-name">Dr. Mason Ahmadvand
-          <a class="tc-li" href="https://www.linkedin.com/in/mahmadvand/" target="_blank" rel="noopener noreferrer" aria-label="Mason on LinkedIn" title="LinkedIn">
-            <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.27V1.73C24 .77 23.2 0 22.22 0z"/></svg>
-          </a>
-        </div>
-        <div class="tc-role">Founder · AI &amp; Security Lead</div>
-        <p class="tc-bio">15+ years building software security and infrastructure. PhD-trained engineer behind the Zircuit blockchain — kept <strong>$50B+</strong> in digital assets safe across Ethereum &amp; Solana. Now applying that rigour to simulation-tested B2B sales for the European installer market.</p>
-        <ul class="tc-creds">
-          <li><em>PhD</em> Computer Security, TU Munich</li>
-          <li><em>$50B+</em> in digital assets safeguarded across Ethereum &amp; Solana</li>
-          <li><em>Led</em> the Zircuit blockchain build — AI + compliance baked in</li>
-          <li><em>Ex</em>-SAP Cloud Security head · Google Research · Quantstamp</li>
-        </ul>
-      </article>
-
-      <article class="team-card">
-        <div class="tc-avatar"><img src="mo.png" alt="Mohammad Moein"></div>
-        <div class="tc-name">Mohammad Moein
-          <a class="tc-li" href="https://www.linkedin.com/in/mohammadmoein/" target="_blank" rel="noopener noreferrer" aria-label="Mo on LinkedIn" title="LinkedIn">
-            <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.27V1.73C24 .77 23.2 0 22.22 0z"/></svg>
-          </a>
-        </div>
-        <div class="tc-role">Founder · ML &amp; Research Lead</div>
-        <p class="tc-bio">A decade of translating machine-learning research into market impact: computer vision at <strong>Trayzi</strong>, computational toxicology at <strong>Aalto</strong>, DILI-prediction algorithms with <strong>Johnson &amp; Johnson</strong>, and now agentic AI for education and B2B sales.</p>
-        <ul class="tc-creds">
-          <li><em>10y</em> ML research → production deployment</li>
-          <li><em>J&amp;J</em> — DILI-prediction algorithms for drug safety</li>
-          <li><em>Aalto</em> — computational toxicology research</li>
-          <li><em>Trayzi</em> — applied computer vision at scale</li>
-        </ul>
-      </article>
-    </div>
-
     <!-- Scene label (top-right): compact 2-line panel — meta line + title — kept short
          enough to clear scene right-edge content (Weber installer, expert agents, fleet) -->
     <article class="scene-panel active" data-scene="1">
-      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">01</span>/09</span><span>·</span><span class="panel-cat">Behavioural Prior</span></div>
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">01</span>/08</span><span>·</span><span class="panel-cat">Behavioural Prior</span></div>
       <div class="panel-title">Connect <em>your</em> data.</div>
     </article>
 
     <article class="scene-panel" data-scene="2">
-      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">02</span>/09</span><span>·</span><span class="panel-cat">Workflow = Agents</span></div>
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">02</span>/08</span><span>·</span><span class="panel-cat">Workflow = Agents</span></div>
       <div class="panel-title">Each step is <em>an agent</em>.</div>
     </article>
 
     <article class="scene-panel" data-scene="3">
-      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">03</span>/09</span><span>·</span><span class="panel-cat">Fleet Orchestration</span></div>
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">03</span>/08</span><span>·</span><span class="panel-cat">Fleet Orchestration</span></div>
       <div class="panel-title">Spin up <em>DACH</em> fleet.</div>
     </article>
 
     <article class="scene-panel" data-scene="4">
-      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">04</span>/09</span><span>·</span><span class="panel-cat">Simulation</span></div>
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">04</span>/08</span><span>·</span><span class="panel-cat">Simulation</span></div>
       <div class="panel-title">Test before you <em>send</em>.</div>
     </article>
 
     <article class="scene-panel" data-scene="5">
-      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">05</span>/09</span><span>·</span><span class="panel-cat">Warmest Signals First</span></div>
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">05</span>/08</span><span>·</span><span class="panel-cat">Warmest Signals First</span></div>
       <div class="panel-title">The <em>right</em> channel.</div>
     </article>
 
     <article class="scene-panel" data-scene="6">
-      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">06</span>/09</span><span>·</span><span class="panel-cat">Live Updating</span></div>
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">06</span>/08</span><span>·</span><span class="panel-cat">Live Updating</span></div>
       <div class="panel-title">Every result tightens.</div>
     </article>
 
     <article class="scene-panel" data-scene="7">
-      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">07</span>/09</span><span>·</span><span class="panel-cat">Expert + Human Review</span></div>
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">07</span>/08</span><span>·</span><span class="panel-cat">Expert + Human Review</span></div>
       <div class="panel-title">Reviewed <em>before</em> deploy.</div>
     </article>
 
     <article class="scene-panel" data-scene="8">
-      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">08</span>/09</span><span>·</span><span class="panel-cat">14-Day Checkpoint</span></div>
+      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">08</span>/08</span><span>·</span><span class="panel-cat">14-Day Checkpoint</span></div>
       <div class="panel-title"><em>Predicted</em> vs <em>actual</em>.</div>
-    </article>
-
-    <article class="scene-panel" data-scene="9">
-      <div class="panel-meta"><span class="panel-live"></span><span class="panel-step">Step <span class="ix">09</span>/09</span><span>·</span><span class="panel-cat">Team &amp; Portfolio</span></div>
-      <div class="panel-title">Built by <em>operators</em>.</div>
     </article>
 
     <!-- bottom progress -->
@@ -318,12 +285,11 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 48px
         <span class="prog-tick" data-go="6"></span>
         <span class="prog-tick" data-go="7"></span>
         <span class="prog-tick" data-go="8"></span>
-        <span class="prog-tick" data-go="9"></span>
       </div>
     </div>
   </div>
 
-  <!-- 9 scroll drivers, each 100vh — last drives the Team & Portfolio overlay -->
+  <!-- 8 scroll drivers, each 100vh — sticky stage holds during 8 page-heights of scroll -->
   <div class="drivers" id="drivers">
     <div class="driver" data-scene="1"></div>
     <div class="driver" data-scene="2"></div>
@@ -333,7 +299,54 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 48px
     <div class="driver" data-scene="6"></div>
     <div class="driver" data-scene="7"></div>
     <div class="driver" data-scene="8"></div>
-    <div class="driver" data-scene="9"></div>
+  </div>
+</section>
+
+<!-- ─────── Team — standalone section, not a step in the simulation ─────── -->
+<section class="team-section" id="team">
+  <div class="container">
+    <div class="section-label">Team</div>
+    <h2>Built by <em>operators</em>.</h2>
+    <div class="section-line"></div>
+    <p class="lede">The two founders designing and operating the simulation-first system.</p>
+
+    <div class="team-grid">
+      <article class="team-card">
+        <div class="tc-avatar"><img src="mason.jpg" alt="Dr. Mason Ahmadvand"></div>
+        <div class="tc-name">
+          <span>Dr. Mason Ahmadvand</span>
+          <a class="tc-li" href="https://www.linkedin.com/in/mahmadvand/" target="_blank" rel="noopener noreferrer" aria-label="Mason on LinkedIn" title="LinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.27V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+          </a>
+        </div>
+        <div class="tc-role">Founder · AI &amp; Security Lead</div>
+        <p class="tc-bio">15+ years building software security and infrastructure. PhD-trained engineer behind the Zircuit blockchain — kept <strong>$50B+</strong> in digital assets safe across Ethereum &amp; Solana. Now applying that rigour to simulation-tested B2B sales for the European installer market.</p>
+        <ul class="tc-creds">
+          <li><em>PhD</em> Computer Security, TU Munich</li>
+          <li><em>$50B+</em> in digital assets safeguarded across Ethereum &amp; Solana</li>
+          <li><em>Led</em> the Zircuit blockchain build — AI + compliance baked in</li>
+          <li><em>Ex</em>-SAP Cloud Security head · Google Research · Quantstamp</li>
+        </ul>
+      </article>
+
+      <article class="team-card">
+        <div class="tc-avatar"><img src="mo.png" alt="Mohammad Moein"></div>
+        <div class="tc-name">
+          <span>Mohammad Moein</span>
+          <a class="tc-li" href="https://www.linkedin.com/in/mohammadmoein/" target="_blank" rel="noopener noreferrer" aria-label="Mo on LinkedIn" title="LinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.27V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+          </a>
+        </div>
+        <div class="tc-role">Founder · ML &amp; Research Lead</div>
+        <p class="tc-bio">A decade of translating machine-learning research into market impact: computer vision at <strong>Trayzi</strong>, computational toxicology at <strong>Aalto</strong>, DILI-prediction algorithms with <strong>Johnson &amp; Johnson</strong>, and now agentic AI for education and B2B sales.</p>
+        <ul class="tc-creds">
+          <li><em>10y</em> ML research → production deployment</li>
+          <li><em>J&amp;J</em> — DILI-prediction algorithms for drug safety</li>
+          <li><em>Aalto</em> — computational toxicology research</li>
+          <li><em>Trayzi</em> — applied computer vision at scale</li>
+        </ul>
+      </article>
+    </div>
   </div>
 </section>
 
@@ -342,8 +355,8 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 48px
   <h2>Every claim above is <em>empirically</em> testable<br>inside the first month.</h2>
   <p>We start the day Sunlumo signs. By the 14-day checkpoint you will have working infrastructure, a calibrated simulation engine, and a real campaign in flight.</p>
   <div class="outro-actions">
-    <a href="https://www.linkedin.com/in/mahmadvand/" target="_blank" rel="noopener" class="btn-primary">Request Phase 0 Contract</a>
-    <a href="https://www.linkedin.com/in/mohammadmoein/" target="_blank" rel="noopener" class="btn-secondary">Schedule a call</a>
+    <a href="https://calendar.app.google/xyPxuZyRKyYmPiQE8" target="_blank" rel="noopener" class="btn-primary">Schedule a call</a>
+    <a href="https://www.linkedin.com/in/mahmadvand/" target="_blank" rel="noopener" class="btn-secondary">Message on LinkedIn</a>
   </div>
 </section>
 
@@ -356,7 +369,6 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 48px
 (() => {
   const iframe   = document.getElementById('simFrame');
   const veil     = document.getElementById('simVeil');
-  const teamGrid = document.getElementById('teamGrid');
   // stepN no longer exists — the step number lives inside each scene-panel's .ix span;
   // it auto-shows the correct number when its panel becomes active.
   const panels   = [...document.querySelectorAll('.scene-panel')];
@@ -445,20 +457,8 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 48px
       t.classList.toggle('active', idx === n);
       t.classList.toggle('done',  idx <  n);
     });
-    progTrack.style.setProperty('--prog', (n / 9 * 100) + '%');
-
-    if (n === 9) {
-      // Team & Portfolio: hide simulation, reveal team grid.
-      iframe.classList.add('dim');
-      teamGrid.classList.add('active');
-      // Park the simulation at scene 8's end-state so coming back is instant.
-      sendGoto(8);
-    } else {
-      // Sim scenes 1..8: ensure iframe is visible and team grid is hidden.
-      iframe.classList.remove('dim');
-      teamGrid.classList.remove('active');
-      sendGoto(n);
-    }
+    progTrack.style.setProperty('--prog', (n / 8 * 100) + '%');
+    sendGoto(n);
     active = n;
   }
 
@@ -482,6 +482,15 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:32px 48px
     const r = target.getBoundingClientRect();
     window.scrollTo({ top: r.top + window.scrollY - window.innerHeight * 0.4, behavior: 'smooth' });
   }));
+
+  // ── reveal team-section cards once scrolled into view ──
+  const team = document.getElementById('team');
+  if (team) {
+    const teamIO = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) team.classList.add('in'); });
+    }, { rootMargin: '-15% 0px -15% 0px' });
+    teamIO.observe(team);
+  }
 })();
 </script>
 </body>
